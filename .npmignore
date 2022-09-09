@@ -1,0 +1,24 @@
+# Folders
+.circleci/
+.editorconfig
+.github/
+src/
+test/
+
+# Development
+.eslintcache
+*.map
+
+# Files
+.gitignore
+.travis.yml
+gulpfile.js
+tsconfig.json
+tslint.json
+
+# Project specific
+*.exe
+*.nsi
+test.js
+test.ts
+todo.md
