@@ -1,7 +1,7 @@
 {
 	"name": "@nsis/dent",
 	"version": "0.0.0",
-	"description": "An opinionated formatter for NSIS files",
+	"description": "An opinionated code formatter for NSIS script",
 	"license": "MIT",
 	"scripts": {
 		"build": "rollup --config",
