@@ -14,4 +14,6 @@ dist/
 # Project specific
 *.exe
 *.nsi
+!test/**/*.nsi
 todo.md
+test.js
