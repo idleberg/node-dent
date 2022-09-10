@@ -56,6 +56,11 @@ export class Dent {
 					formattedLines.push(this.appendLine(line, indentationLevel - 1));
 					break;
 
+				case rules.specialDedenters.includes(keyword):
+					formattedLines.push(this.appendLine(line, indentationLevel));
+					indentationLevel--;
+					break;
+
 				case rules.indenters.includes(keyword):
 					formattedLines.push(this.appendLine(line, indentationLevel));
 					indentationLevel++;
