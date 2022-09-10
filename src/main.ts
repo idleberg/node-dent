@@ -33,10 +33,9 @@ export class Dent {
 		};
 	}
 
-	public async format(inputFile): Promise<string> {
+	public format(fileContents: string): string {
 		let indentationLevel: number = 0;
 
-		const fileContents = (await fs.readFile(inputFile)).toString();
 		const lineEndings = this.detectEOL(fileContents);
 		const formattedLines: string[] = [];
 
