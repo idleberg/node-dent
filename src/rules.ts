@@ -13,9 +13,6 @@ export const rules = {
         '${Do}',
         '${DoUntil}',
         '${DoWhile}',
-        '${Else}',
-        '${ElseIf}',
-        '${ElseUnless}',
         '${For}',
         '${ForEach}',
         '${If}',
@@ -35,8 +32,6 @@ export const rules = {
         'Section'
     ],
     dedenters: [
-        '!else',
-        '!elseif',
         '!endif',
         '!macroend',
         '${EndIf}',
@@ -61,5 +56,10 @@ export const rules = {
         '${OrIf}',
         '${OrIfNot}',
         '${OrUnless}',
-    ],
+				'!else',
+				'!elseif',
+				'${Else}',
+				'${ElseIf}',
+				'${ElseUnless}',
+    ]
 };
