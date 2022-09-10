@@ -29,7 +29,8 @@ export const rules = {
         '${MementoUnselectedSection}',
         'Function',
         'PageEx',
-        'Section'
+        'Section',
+        'SectionGroup'
     ],
     dedenters: [
         '!endif',
@@ -47,6 +48,7 @@ export const rules = {
         'FunctionEnd',
         'PageExEnd',
         'SectionEnd',
+        'SectionGroupEnd'
     ],
     // These follow indenters, but aren't indented themselves
     specialIndenters: [
@@ -60,6 +62,6 @@ export const rules = {
 				'!elseif',
 				'${Else}',
 				'${ElseIf}',
-				'${ElseUnless}',
+				'${ElseUnless}'
     ]
 };
