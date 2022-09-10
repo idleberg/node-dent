@@ -62,6 +62,7 @@ export const rules = {
 				'!elseif',
 				'${Else}',
 				'${ElseIf}',
+				'${ElseIfNot}',
 				'${ElseUnless}'
     ]
 };
