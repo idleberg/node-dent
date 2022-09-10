@@ -49,7 +49,7 @@ export const rules = {
         'SectionEnd',
     ],
     // These follow indenters, but aren't indented themselves
-    optionalIndenters: [
+    specialIndenters: [
         '${AndIf}',
         '${AndIfNot}',
         '${AndUnless}',

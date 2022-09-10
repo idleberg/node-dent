@@ -52,7 +52,7 @@ export class Dent {
 				.at(0) ?? '';
 
 			switch (true) {
-				case rules.optionalIndenters.includes(keyword):
+				case rules.specialIndenters.includes(keyword):
 					formattedLines.push(this.appendLine(line, indentationLevel - 1));
 					break;
 
