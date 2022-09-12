@@ -1,6 +1,5 @@
 import { detectNewline } from 'detect-newline';
 import { platform } from 'node:os';
-import { promises as fs } from 'node:fs';
 import { rules } from './rules.js'
 
 interface DentOptions {
@@ -34,7 +33,8 @@ export class Dent {
 	}
 
 	public format(fileContents: string): string {
-		let indentationLevel: number = 0;
+		let indentationLevel = 0;
+		let switchIndentationLevel = 0;
 
 		const lineEndings = this.detectEOL(fileContents);
 		const formattedLines: string[] = [];
@@ -46,27 +46,39 @@ export class Dent {
 		: fileContents.split(lineEndings);
 
 		lines.forEach(line => {
-			let keyword: string = line
+			const keyword: string = line
 				.trim()
 				.split(' ')
 				.at(0) ?? '';
 
+			if (keyword.toLowerCase() === '${Switch}') {
+				switchIndentationLevel = indentationLevel;
+			}
+
 			switch (true) {
-				case rules.specialIndenters.includes(keyword):
+				case keyword.toLowerCase() === '${EndSwitch}':
+					indentationLevel = switchIndentationLevel;
+					formattedLines.push(this.appendLine(line, indentationLevel));
+					indentationLevel = indentationLevel === 0
+						? 0
+						: indentationLevel - 1;
+					break;
+
+				case rules.specialIndenters.includes(keyword.toLowerCase()):
 					formattedLines.push(this.appendLine(line, indentationLevel - 1));
 					break;
 
-				case rules.specialDedenters.includes(keyword):
+				case rules.specialDedenters.includes(keyword.toLowerCase()):
 					formattedLines.push(this.appendLine(line, indentationLevel));
 					indentationLevel--;
 					break;
 
-				case rules.indenters.includes(keyword):
+				case rules.indenters.includes(keyword.toLowerCase()):
 					formattedLines.push(this.appendLine(line, indentationLevel));
 					indentationLevel++;
 					break;
 
-				case rules.dedenters.includes(keyword):
+				case rules.dedenters.includes(keyword.toLowerCase()):
 					indentationLevel = indentationLevel === 0
 						? 0
 						: indentationLevel - 1;

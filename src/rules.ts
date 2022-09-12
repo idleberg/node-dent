@@ -1,3 +1,4 @@
+// TODO: support case-insensitive syntax
 export const rules = {
 	indenters: [
 		'!if',
@@ -6,6 +7,13 @@ export const rules = {
 		'!ifmacrondef',
 		'!ifndef',
 		'!macro',
+		'${Case}',
+		'${Case2}',
+		'${Case3}',
+		'${Case4}',
+		'${Case5}',
+		'${CaseElse}',
+		'${Default}',
 		'${Do}',
 		'${DoUntil}',
 		'${DoWhile}',
@@ -22,15 +30,7 @@ export const rules = {
 		'PageEx',
 		'Section',
 		'SectionGroup',
-
-		'${Case}',
-		'${Case2}',
-		'${Case3}',
-		'${Case4}',
-		'${Case5}',
-		'${CaseElse}',
-		'${Default}',
-	],
+	].map(i => i.toLowerCase()),
 	dedenters: [
 		'!endif',
 		'!macroend',
@@ -48,7 +48,7 @@ export const rules = {
 		'PageExEnd',
 		'SectionEnd',
 		'SectionGroupEnd',
-	],
+	].map(i => i.toLowerCase()),
 	// These follow indenters, but aren't indented themselves
 	specialIndenters: [
 		'!else',
@@ -63,8 +63,8 @@ export const rules = {
 		'${OrIf}',
 		'${OrIfNot}',
 		'${OrUnless}',
-	],
+	].map(i => i.toLowerCase()),
 	specialDedenters: [
 		'${Break}'
-	]
+	].map(i => i.toLowerCase())
 };
