@@ -44,6 +44,8 @@
 	"devDependencies": {
 		"@rollup/plugin-typescript": "^8.5.0",
 		"@types/node": "^18.7.16",
+		"@typescript-eslint/eslint-plugin": "^5.37.0",
+		"@typescript-eslint/parser": "^5.37.0",
 		"ava": "^4.3.3",
 		"detect-newline": "^4.0.0",
 		"eslint": "^8.23.0",
