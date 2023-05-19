@@ -31,6 +31,7 @@ export const rules = {
 		'Section',
 		'SectionGroup',
 	].map(i => i.toLowerCase()),
+
 	dedenters: [
 		'!endif',
 		'!macroend',
@@ -49,6 +50,7 @@ export const rules = {
 		'SectionEnd',
 		'SectionGroupEnd',
 	].map(i => i.toLowerCase()),
+
 	// These follow indenters, but aren't indented themselves
 	specialIndenters: [
 		'!else',
@@ -64,6 +66,7 @@ export const rules = {
 		'${OrIfNot}',
 		'${OrUnless}',
 	].map(i => i.toLowerCase()),
+
 	specialDedenters: [
 		'${Break}'
 	].map(i => i.toLowerCase())
