@@ -19,6 +19,7 @@ test('Tab indentation', async t => {
 		'utf8'
 	);
 
+	// FIXME there should be no need to trim
 	assert.is(dent.format(fixture), expected.trim());
 });
 
@@ -37,6 +38,7 @@ test('Space indentation', async t => {
 		'utf8'
 	);
 
+	// FIXME there should be no need to trim
 	assert.is(dent.format(fixture), expected.trim());
 });
 
@@ -53,7 +55,7 @@ test('Empty lines', async t => {
 		'utf8'
 	);
 
-	assert.is(dent.format(fixture), expected.trim());
+	assert.is(dent.format(fixture), expected);
 });
 
 test.run();
