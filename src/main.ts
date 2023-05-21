@@ -2,7 +2,7 @@ import { detectNewline } from 'detect-newline';
 import { platform } from 'node:os';
 import { rules } from './rules.js'
 
-interface DentOptions {
+type DentOptions = {
 	indentSize?: number;
 	trimEmptyLines?: boolean;
 	useTabs?: boolean;
@@ -12,7 +12,7 @@ export class Dent {
 	options = {
 		indentSize: 2,
 		trimEmptyLines: true,
-		useTabs: true,
+		useTabs: true
 	};
 
 	constructor(options: DentOptions = {}) {
@@ -40,10 +40,12 @@ export class Dent {
 		const formattedLines: string[] = [];
 
 		const lines: string[] = this.options.trimEmptyLines === true
-		? fileContents
-			.replace(/^(\s*\n){2,}/g, '\n')
-			.split(lineEndings)
-		: fileContents.split(lineEndings);
+			? fileContents
+				.trim()
+				.replaceAll(/^(\s*\r?\n){2,}/gm, lineEndings)
+				.split(lineEndings)
+			: fileContents
+				.split(lineEndings);
 
 		lines.forEach(line => {
 			const keyword: string = line
