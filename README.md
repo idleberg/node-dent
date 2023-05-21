@@ -1,10 +1,10 @@
 # @nsis/dent
 
-[![npm](https://flat.badgen.net/npm/license/@nsis/dent)](https://www.npmjs.org/package/@nsis/dent)
-[![npm](https://flat.badgen.net/npm/v/@nsis/dent)](https://www.npmjs.org/package/@nsis/dent)
-[![CI](https://img.shields.io/github/actions/workflow/status/idleberg/node-dent/default.yml?style=flat-square)](https://github.com/idleberg/node-dent/actions)
+> An opinionated code formatter for NSIS script
 
-An opinionated code formatter for NSIS script
+[![License](https://img.shields.io/npm/l/@nsis/dent?style=for-the-badge)]([https://github.com/idleberg/node-dent/releases](https://github.com/idleberg/node-dent/actions))
+[![npm](https://img.shields.io/npm/v/nsis/dent?style=for-the-badge)](https://www.npmjs.org/package/@nsis/dent)
+[![Build](https://img.shields.io/github/actions/workflow/status/idleberg/node-dent/default.yml?style=for-the-badge)]([https://github.com/idleberg/node-dent/releases](https://github.com/idleberg/node-dent/actions))
 
 ## Installation
 
