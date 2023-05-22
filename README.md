@@ -2,9 +2,9 @@
 
 > An opinionated code formatter for NSIS script
 
-[![License](https://img.shields.io/npm/l/@nsis/dent?style=for-the-badge)]([https://github.com/idleberg/node-dent/releases](https://github.com/idleberg/node-dent/actions))
-[![npm](https://img.shields.io/npm/v/nsis/dent?style=for-the-badge)](https://www.npmjs.org/package/@nsis/dent)
-[![Build](https://img.shields.io/github/actions/workflow/status/idleberg/node-dent/default.yml?style=for-the-badge)]([https://github.com/idleberg/node-dent/releases](https://github.com/idleberg/node-dent/actions))
+[![License](https://img.shields.io/github/license/idleberg/node-dent?style=for-the-badge)](https://github.com/idleberg/node-dent/blob/main/LICENSE)
+[![npm](https://img.shields.io/npm/v/@nsis/dent?style=for-the-badge)](https://www.npmjs.org/package/@nsis/dent)
+[![Build](https://img.shields.io/github/actions/workflow/status/idleberg/node-dent/default.yml?style=for-the-badge)](https://github.com/idleberg/node-dent/actions)
 
 ## Installation
 
