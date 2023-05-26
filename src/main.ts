@@ -101,7 +101,7 @@ export class Dent {
 
 	private appendLine(line: string, level: number): string {
 		return (line.length
-			? `${this.getIndentChar(this.options).repeat(level)}${line.trim()}`
+			? `${this.getIndentChar().repeat(level)}${line.trim()}`
 			: ''
 		);
 	}
@@ -125,10 +125,10 @@ export class Dent {
 		}
 	}
 
-	private getIndentChar(options): string {
-		return(options.useTabs
+	private getIndentChar(): string {
+		return(this.options.useTabs
 			? '\t'
-			: ' '.repeat(options.indentSize)
+			: ' '.repeat(this.options.indentSize)
 		);
 	}
 }
