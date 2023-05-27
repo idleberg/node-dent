@@ -23,6 +23,25 @@ test('Tab indentation', async t => {
 	assert.is(dent.format(fixture), expected.trim());
 });
 
+test('Explicit tab indentation', async t => {
+	const dent = new Dent({
+		useTabs: true
+	});
+
+	const fixture = await fs.readFile(
+		resolve(__dirname, 'tests/fixtures/indentation.nsi'),
+		'utf8'
+	);
+
+	const expected = await fs.readFile(
+		resolve(__dirname, 'tests/expected/tab-indentation.nsi'),
+		'utf8'
+	);
+
+	// FIXME there should be no need to trim
+	assert.is(dent.format(fixture), expected.trim());
+});
+
 test('Space indentation', async t => {
 	const dent = new Dent({
 		useTabs: false
@@ -44,6 +63,25 @@ test('Space indentation', async t => {
 
 test('Empty lines', async t => {
 	const dent = new Dent();
+
+	const fixture = await fs.readFile(
+		resolve(__dirname, 'tests/fixtures/empty-lines.nsi'),
+		'utf8'
+	);
+
+	const expected = await fs.readFile(
+		resolve(__dirname, 'tests/expected/empty-lines.nsi'),
+		'utf8'
+	);
+
+	// FIXME there should be no need to trim
+	assert.is(dent.format(fixture), expected.trim());
+});
+
+test('Explicit empty lines', async t => {
+	const dent = new Dent({
+		trimEmptyLines: true
+	});
 
 	const fixture = await fs.readFile(
 		resolve(__dirname, 'tests/fixtures/empty-lines.nsi'),
