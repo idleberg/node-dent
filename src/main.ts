@@ -5,7 +5,7 @@ import { rules } from './rules.js'
 type DentOptions = {
 	endOfLine?: 'crlf' | 'lf';
 	indentSize?: number;
-	trimEmptyLine?: boolean;
+	trimEmptyLines?: boolean;
 	useTabs?: boolean;
 }
 
@@ -13,7 +13,7 @@ export class Dent {
 	options = {
 		endOfLines: undefined,
 		indentSize: 2,
-		trimEmptyLine: true,
+		trimEmptyLines: true,
 		useTabs: true
 	};
 
@@ -41,7 +41,7 @@ export class Dent {
 		const lineEndings = this.detectEOL(fileContents);
 		const formattedLines: string[] = [];
 
-		const lines: string[] = this.options.trimEmptyLine === true
+		const lines: string[] = this.options.trimEmptyLines === true
 			? fileContents
 				.trim()
 				.replaceAll(/^(\s*\r?\n){2,}/gm, lineEndings)
