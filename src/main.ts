@@ -2,19 +2,19 @@ import { detectNewline } from 'detect-newline';
 import { platform } from 'node:os';
 import { rules } from './rules.js'
 
-type DentOptions = {
-	endOfLine?: 'crlf' | 'lf';
+export type DentOptions = {
+	endOfLines?: 'crlf' | 'lf';
 	indentSize?: number;
 	trimEmptyLines?: boolean;
 	useTabs?: boolean;
 }
 
 export class Dent {
-	options = {
-		endOfLines: undefined,
+	private options: DentOptions = {
+		endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
 		indentSize: 2,
 		trimEmptyLines: true,
-		useTabs: true
+		useTabs: true,
 	};
 
 	constructor(options: DentOptions = {}) {
