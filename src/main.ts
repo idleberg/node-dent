@@ -127,7 +127,7 @@ export class Dent {
 
 	private getIndentChar(): string {
 		return(this.options.useTabs
-			? '\t'
+			? '\t'.repeat(this.options.indentSize)
 			: ' '.repeat(this.options.indentSize)
 		);
 	}
