@@ -18,11 +18,11 @@ import { Dent } from '@nsis/dent';
 const dent = new Dent(/* user options */);
 
 dent.format(`
-# Look ma, no indentation
-Name "Demo"
-Section
-Nop
-Section
+	# Look ma, no indentation
+	Name "Demo"
+	Section
+	Nop
+	Section
 `);
 ```
 
