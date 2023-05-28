@@ -50,10 +50,6 @@ Default: `true`
 
 :information_source: [Why defaulting to tabs is good for accessibility reasons](https://github.com/prettier/prettier/issues/7475#issuecomment-668544890)
 
-## About
-
-`dent` is a very simple-minded formatter for NSIS. It does not use an AST or anything fancy like that. At least not for now!
-
 ## Related
 
 - [CLI for `dent`](https://github.com/idleberg/node-dent-cli)
