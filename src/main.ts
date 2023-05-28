@@ -10,14 +10,17 @@ export type DentOptions = {
 }
 
 export class Dent {
-	private options: DentOptions = {
-		endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
-		indentSize: 2,
-		trimEmptyLines: true,
-		useTabs: true,
-	};
+	private options: DentOptions;
 
 	constructor(options: DentOptions = {}) {
+		this.options = {
+			endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
+			indentSize: 2,
+			trimEmptyLines: true,
+			useTabs: true,
+			...options
+		};
+
 		if (options.useTabs === true && options.indentSize) {
 			throw Error('The indentSize option can only be mixed with useTabs');
 		}
@@ -27,11 +30,6 @@ export class Dent {
 				throw Error('The indentSize option expects a positive integer');
 			}
 		}
-
-		this.options = {
-			...this.options,
-			...options
-		};
 	}
 
 	public format(fileContents: string): string {
@@ -127,8 +125,8 @@ export class Dent {
 
 	private getIndentChar(): string {
 		return(this.options.useTabs
-			? '\t'.repeat(this.options.indentSize)
-			: ' '.repeat(this.options.indentSize)
+			? '\t'.repeat(this.options.indentSize || 2)
+			: ' '.repeat(this.options.indentSize || 2)
 		);
 	}
 }
