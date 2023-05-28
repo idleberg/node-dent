@@ -15,7 +15,8 @@
 ```ts
 import { Dent } from '@nsis/dent';
 
-const dent = new Dent();
+const dent = new Dent(/* user options */);
+
 dent.format(`
 # Look ma, no indentation
 Name "Demo"
