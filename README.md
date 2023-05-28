@@ -31,7 +31,7 @@ dent.format(`
 #### `options.endOfLines`
 
 Type: `"crlf" | "lf"`  
-Default: `"crlf"` on Windows, `"lf"` elsewhere  
+Default: `"crlf"` (Windows), `"lf"` (Linux, macOS)
 
 #### `options.indentSize`
 
