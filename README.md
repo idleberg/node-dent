@@ -48,7 +48,7 @@ Default: `true`
 Type: `boolean`  
 Default: `true`  
 
-:information_source: [Why defaulting to tabs is good for accessibility](https://github.com/prettier/prettier/issues/7475#issuecomment-668544890)
+:white_check_mark: [Why defaulting to tabs is good for accessibility](https://github.com/prettier/prettier/issues/7475#issuecomment-668544890)
 
 ## Related
 
