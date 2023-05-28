@@ -2,6 +2,8 @@ import { detectNewline } from 'detect-newline';
 import { platform } from 'node:os';
 import { rules } from './rules.js'
 
+const defaultIndentation = 2;
+
 export type DentOptions = {
 	endOfLines?: 'crlf' | 'lf';
 	indentSize?: number;
@@ -15,7 +17,7 @@ export class Dent {
 	constructor(options: DentOptions = {}) {
 		this.options = {
 			endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
-			indentSize: 2,
+			indentSize: defaultIndentation,
 			trimEmptyLines: true,
 			useTabs: true,
 			...options
@@ -125,8 +127,8 @@ export class Dent {
 
 	private getIndentChar(): string {
 		return(this.options.useTabs
-			? '\t'.repeat(this.options.indentSize || 2)
-			: ' '.repeat(this.options.indentSize || 2)
+			? '\t'.repeat(this.options.indentSize || defaultIndentation)
+			: ' '.repeat(this.options.indentSize || defaultIndentation)
 		);
 	}
 }
