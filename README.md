@@ -52,7 +52,7 @@ Default: `true`
 
 ## Related
 
-- [CLI for `dent`](https://github.com/idleberg/node-dent-cli)
+- [CLI for `dent`](https://www.npmjs.com/package/@nsis/dent)
 
 ## License
 
