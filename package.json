@@ -41,8 +41,7 @@
 		"formatter"
 	],
 	"dependencies": {
-		"detect-newline": "^4.0.0",
-		"globby": "^13.2.2"
+		"detect-newline": "^4.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^20.2.1",
