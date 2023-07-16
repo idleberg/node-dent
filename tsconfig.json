@@ -2,11 +2,12 @@
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"declaration": true,
-		"module": "ES2020",
+		"module": "esnext",
 		"moduleResolution": "node",
 		"outDir": "dist",
 		"skipLibCheck": true,
-		"strict": true
+		"strict": true,
+		"target": "esnext"
 	},
 	"typeRoots": [
 		"./types",
