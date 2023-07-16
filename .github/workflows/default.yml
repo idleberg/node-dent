@@ -5,14 +5,18 @@ on:
     paths:
     - 'src/**'
     - 'tests/**'
+    - '.eslintrc.cjs'
     - 'package.json'
     - 'pnpm-lock.yaml'
+    - 'tsconfig.json'
   pull_request:
     paths:
     - 'src/**'
     - 'tests/**'
+    - '.eslintrc.cjs'
     - 'package.json'
     - 'pnpm-lock.yaml'
+    - 'tsconfig.json'
 
 jobs:
   default:
