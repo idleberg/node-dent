@@ -1,127 +1,153 @@
 import { detectNewline } from 'detect-newline';
 import { platform } from 'node:os';
-import { rules } from './rules.js'
+import { rules } from './rules.js';
 
 const defaultIndentation = 2;
 
-export class Dent {
-	private options: NsisDent.Options;
+/**
+ * Formats the given file contents using the Dent formatting style.
+ *
+ * @param {NsisDent.Options} options - The options for the Dent formatter.
+ * @returns {function(string): string} The formatting function.
+ * @throws {Error} Throws an error if the options are invalid.
+ */
+export function createFormatter(options: NsisDent.Options = {}): (fileContents: string) => string {
+  const mergedOptions: NsisDent.Options = {
+    endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
+    indentSize: defaultIndentation,
+    trimEmptyLines: true,
+    useTabs: true,
+    ...options
+  };
 
-	constructor(options: NsisDent.Options = {}) {
-		this.options = {
-			endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
-			indentSize: defaultIndentation,
-			trimEmptyLines: true,
-			useTabs: true,
-			...options
-		};
+  if (mergedOptions.useTabs === false && mergedOptions.indentSize) {
+    if (isNaN(mergedOptions.indentSize) || mergedOptions.indentSize <= 0) {
+      throw Error('The indentSize option expects a positive integer');
+    }
+  }
 
-		if (options.useTabs === true && options.indentSize) {
-			throw Error('The indentSize option can only be mixed with useTabs');
-		}
+  /**
+   * Formats the given file contents using the Dent formatting style.
+   *
+   * @param {string} fileContents - The contents of the file to be formatted.
+   * @returns {string} The formatted file contents.
+   */
+  function format(fileContents: string): string {
+    let indentationLevel = 0;
+    let switchIndentationLevel = 0;
 
-		if (options.useTabs === false && options.indentSize) {
-			if (isNaN(options.indentSize) || options.indentSize <= 0) {
-				throw Error('The indentSize option expects a positive integer');
-			}
-		}
-	}
+    const lineEndings = detectEOL(fileContents);
+    const formattedLines: string[] = [];
 
-	public format(fileContents: string): string {
-		let indentationLevel = 0;
-		let switchIndentationLevel = 0;
+    const lines: string[] = mergedOptions.trimEmptyLines === true
+      ? fileContents
+        .trim()
+        .replaceAll(/^(\s*\r?\n){2,}/gm, lineEndings)
+        .split(lineEndings)
+      : fileContents
+        .split(lineEndings);
 
-		const lineEndings = this.detectEOL(fileContents);
-		const formattedLines: string[] = [];
+    lines.forEach(line => {
+      const keyword: string = line
+        .trim()
+        .split(' ')
+        .at(0) ?? '';
 
-		const lines: string[] = this.options.trimEmptyLines === true
-			? fileContents
-				.trim()
-				.replaceAll(/^(\s*\r?\n){2,}/gm, lineEndings)
-				.split(lineEndings)
-			: fileContents
-				.split(lineEndings);
+      if (keyword.toLowerCase() === '${Switch}') {
+        switchIndentationLevel = indentationLevel;
+      }
 
-		lines.forEach(line => {
-			const keyword: string = line
-				.trim()
-				.split(' ')
-				.at(0) ?? '';
+      switch (true) {
+        case keyword.toLowerCase() === '${EndSwitch}':
+          indentationLevel = switchIndentationLevel;
+          formattedLines.push(appendLine(line, indentationLevel));
+          indentationLevel = indentationLevel === 0
+            ? 0
+            : indentationLevel - 1;
+          break;
 
-			if (keyword.toLowerCase() === '${Switch}') {
-				switchIndentationLevel = indentationLevel;
-			}
+        case rules.specialIndenters.includes(keyword.toLowerCase()):
+          formattedLines.push(appendLine(line, indentationLevel - 1));
+          break;
 
-			switch (true) {
-				case keyword.toLowerCase() === '${EndSwitch}':
-					indentationLevel = switchIndentationLevel;
-					formattedLines.push(this.appendLine(line, indentationLevel));
-					indentationLevel = indentationLevel === 0
-						? 0
-						: indentationLevel - 1;
-					break;
+        case rules.specialDedenters.includes(keyword.toLowerCase()):
+          formattedLines.push(appendLine(line, indentationLevel));
+          indentationLevel--;
+          break;
 
-				case rules.specialIndenters.includes(keyword.toLowerCase()):
-					formattedLines.push(this.appendLine(line, indentationLevel - 1));
-					break;
+        case rules.indenters.includes(keyword.toLowerCase()):
+          formattedLines.push(appendLine(line, indentationLevel));
+          indentationLevel++;
+          break;
 
-				case rules.specialDedenters.includes(keyword.toLowerCase()):
-					formattedLines.push(this.appendLine(line, indentationLevel));
-					indentationLevel--;
-					break;
+        case rules.dedenters.includes(keyword.toLowerCase()):
+          indentationLevel = indentationLevel === 0
+            ? 0
+            : indentationLevel - 1;
 
-				case rules.indenters.includes(keyword.toLowerCase()):
-					formattedLines.push(this.appendLine(line, indentationLevel));
-					indentationLevel++;
-					break;
+          formattedLines.push(appendLine(line, indentationLevel));
+          break;
 
-				case rules.dedenters.includes(keyword.toLowerCase()):
-					indentationLevel = indentationLevel === 0
-						? 0
-						: indentationLevel - 1;
+        default:
+          formattedLines.push(appendLine(line, indentationLevel));
+          break;
+      }
+    });
 
-					formattedLines.push(this.appendLine(line, indentationLevel));
-					break;
+    return formattedLines.join(lineEndings);
+  }
 
-				default:
-					formattedLines.push(this.appendLine(line, indentationLevel));
-					break;
-			}
-		});
+  /**
+   * Appends the given line with the specified indentation level.
+   *
+   * @param {string} line - The line to append.
+   * @param {number} level - The indentation level.
+   * @returns {string} The appended line with the specified indentation.
+   */
+  function appendLine(line: string, level: number): string {
+    return (line.length
+      ? `${getIndentChar(level)}${line.trim()}`
+      : ''
+    );
+  }
 
-		return formattedLines.join(lineEndings);
-	}
+  /**
+   * Detects the end-of-line characters used in the input.
+   *
+   * @param {string} input - The input string.
+   * @returns {string} The detected end-of-line characters.
+   */
+  function detectEOL(input: string): string {
+    if (mergedOptions.endOfLines) {
+      return mergedOptions.endOfLines === 'crlf'
+        ? '\r\n'
+        : '\n';
+    }
 
-	private appendLine(line: string, level: number): string {
-		return (line.length
-			? `${this.getIndentChar().repeat(level)}${line.trim()}`
-			: ''
-		);
-	}
+    const newLine = detectNewline(input);
 
-	private detectEOL(input: string): string {
-		if (this.options.endOfLines) {
-			return this.options.endOfLines === 'crlf'
-				? '\r\n'
-				: '\n';
-		}
+    if (newLine !== undefined) {
+      return newLine;
+    } else {
+      return (platform() === 'win32'
+        ? '\r\n'
+        : '\n'
+      );
+    }
+  }
 
-		const newLine = detectNewline(input);
+  /**
+   * Returns the indentation characters based on the specified level.
+   *
+   * @param {number} level - The indentation level.
+   * @returns {string} The indentation characters.
+   */
+  function getIndentChar(level: number): string {
+    return (mergedOptions.useTabs
+      ? '\t'.repeat(mergedOptions.indentSize || defaultIndentation)
+      : ' '.repeat(mergedOptions.indentSize || defaultIndentation)
+    ).repeat(level);
+  }
 
-		if (newLine !== undefined) {
-			return newLine;
-		} else {
-			return (platform() === 'win32'
-				? '\r\n'
-				: '\n'
-			);
-		}
-	}
-
-	private getIndentChar(): string {
-		return(this.options.useTabs
-			? '\t'.repeat(this.options.indentSize || defaultIndentation)
-			: ' '.repeat(this.options.indentSize || defaultIndentation)
-		);
-	}
+  return format;
 }

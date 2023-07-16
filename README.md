@@ -13,11 +13,11 @@
 ## Usage
 
 ```ts
-import { Dent } from '@nsis/dent';
+import { createFormatter } from '@nsis/dent';
 
-const dent = new Dent(/* user options */);
+const format = createFormatter(/* user options */);
 
-dent.format(`
+format(`
 	# Look ma, no indentation
 	Name "Demo"
 	Section
