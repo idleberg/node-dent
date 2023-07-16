@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     paths:
+    - '.github/**'
     - 'src/**'
     - 'tests/**'
     - '.eslintrc.cjs'
@@ -11,6 +12,7 @@ on:
     - 'tsconfig.json'
   pull_request:
     paths:
+    - '.github/**'
     - 'src/**'
     - 'tests/**'
     - '.eslintrc.cjs'
