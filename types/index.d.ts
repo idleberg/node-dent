@@ -1,9 +1,5 @@
 declare namespace NsisDent {
-	function createFormatter(options?: Options): Formatter;
-
-	type Formatter = {
-		format(fileContents: string): string;
-	}
+	function createFormatter(options?: Options): (fileContents: string) => string;
 
 	type Options = {
 		endOfLines?: 'crlf' | 'lf';
