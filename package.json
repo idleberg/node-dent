@@ -17,11 +17,12 @@
 	},
 	"files": [
 		"dist/",
+		"types/",
 		"LICENSE",
 		"README.md"
 	],
 	"type": "module",
-	"types": "./src/main.ts",
+	"typings": "types/",
 	"exports": {
 		".": {
 			"import": "./dist/index.mjs"

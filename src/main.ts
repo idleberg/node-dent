@@ -4,17 +4,10 @@ import { rules } from './rules.js'
 
 const defaultIndentation = 2;
 
-export type DentOptions = {
-	endOfLines?: 'crlf' | 'lf';
-	indentSize?: number;
-	trimEmptyLines?: boolean;
-	useTabs?: boolean;
-}
-
 export class Dent {
-	private options: DentOptions;
+	private options: NsisDent.Options;
 
-	constructor(options: DentOptions = {}) {
+	constructor(options: NsisDent.Options = {}) {
 		this.options = {
 			endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
 			indentSize: defaultIndentation,
