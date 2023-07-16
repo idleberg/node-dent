@@ -24,11 +24,7 @@
 	],
 	"type": "module",
 	"typings": "types/",
-	"exports": {
-		".": {
-			"import": "./dist/index.mjs"
-		}
-	},
+	"exports": "./dist/index.mjs",
 	"engines": {
 		"node": "^14.13.1 || >=16.0.0"
 	},
