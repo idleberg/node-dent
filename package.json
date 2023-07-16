@@ -4,7 +4,7 @@
 	"description": "An opinionated code formatter for NSIS scripts",
 	"license": "MIT",
 	"scripts": {
-		"build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/index.mjs --format=esm --external:detect-newline",
+		"build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/index.mjs --format=esm --external:detect-newline --external:globby",
 		"dev": "npm run start",
 		"fix": "eslint --fix ./src",
 		"lint:json": "eslint ./*.json --ignore-path .gitignore",
@@ -19,6 +19,7 @@
 		"dist/",
 		"types/",
 		"LICENSE",
+		"package.json",
 		"README.md"
 	],
 	"type": "module",
