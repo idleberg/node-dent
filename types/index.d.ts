@@ -11,4 +11,3 @@ declare namespace NsisDent {
 
 export = NsisDent;
 export as namespace NsisDent;
-
