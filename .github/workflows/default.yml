@@ -19,6 +19,7 @@ on:
     - 'package.json'
     - 'pnpm-lock.yaml'
     - 'tsconfig.json'
+  workflow_dispatch:
 
 jobs:
   default:
