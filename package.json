@@ -4,7 +4,7 @@
 	"description": "An opinionated code formatter for NSIS scripts",
 	"license": "MIT",
 	"scripts": {
-		"build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/index.mjs --format=esm --external:detect-newline --external:globby",
+		"build": "rollup --config",
 		"dev": "npm run start",
 		"fix": "eslint --fix ./src",
 		"lint:json": "eslint ./*.json --ignore-path .gitignore",
@@ -40,15 +40,16 @@
 		"detect-newline": "^4.0.0"
 	},
 	"devDependencies": {
+		"@rollup/plugin-typescript": "^11.1.2",
 		"@types/node": "^20.2.1",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
-		"esbuild": "^0.18.13",
 		"eslint": "^8.45.0",
 		"eslint-plugin-json": "^3.1.0",
 		"husky": "^8.0.3",
 		"lint-staged": "^13.2.3",
 		"npm-run-all2": "^6.0.6",
+		"rollup": "^3.27.0",
 		"tslib": "^2.6.0",
 		"tsm": "^2.3.0",
 		"typescript": "^5.1.6",
