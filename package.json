@@ -24,7 +24,7 @@
 	],
 	"type": "module",
 	"typings": "dist/dent.d.ts",
-	"exports": "dist/dent.js",
+	"exports": "./dist/dent.js",
 	"engines": {
 		"node": ">=18.0.0"
 	},
