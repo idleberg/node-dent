@@ -23,8 +23,8 @@
 		"README.md"
 	],
 	"type": "module",
-	"typings": "types/dent.d.ts",
-	"exports": "./dist/dent.js",
+	"typings": "dist/dent.d.ts",
+	"exports": "dist/dent.js",
 	"engines": {
 		"node": ">=18.0.0"
 	},
