@@ -4,7 +4,7 @@
 	"description": "An opinionated code formatter for NSIS scripts",
 	"license": "MIT",
 	"scripts": {
-		"build": "rollup --config",
+		"build": "tsup",
 		"dev": "npm run start",
 		"fix": "eslint --fix ./src",
 		"lint:json": "eslint ./*.json --ignore-path .gitignore",
@@ -23,10 +23,10 @@
 		"README.md"
 	],
 	"type": "module",
-	"typings": "types/",
-	"exports": "./dist/index.mjs",
+	"typings": "types/dent.d.ts",
+	"exports": "./dist/dent.js",
 	"engines": {
-		"node": "^14.13.1 || >=16.0.0"
+		"node": ">=18.0.0"
 	},
 	"repository": {
 		"type": "git",
@@ -37,22 +37,21 @@
 		"formatter"
 	],
 	"dependencies": {
-		"detect-newline": "^4.0.0"
+		"detect-newline": "^4.0.1"
 	},
 	"devDependencies": {
-		"@rollup/plugin-typescript": "^11.1.2",
-		"@types/node": "^20.2.1",
-		"@typescript-eslint/eslint-plugin": "^6.0.0",
-		"@typescript-eslint/parser": "^6.0.0",
-		"eslint": "^8.45.0",
+		"@types/node": "^18.19.3",
+		"@typescript-eslint/eslint-plugin": "^6.16.0",
+		"@typescript-eslint/parser": "^6.16.0",
+		"eslint": "^8.56.0",
 		"eslint-plugin-json": "^3.1.0",
 		"husky": "^8.0.3",
-		"lint-staged": "^13.2.3",
-		"npm-run-all2": "^6.0.6",
-		"rollup": "^3.27.0",
-		"tslib": "^2.6.0",
+		"lint-staged": "^15.2.0",
+		"npm-run-all2": "^6.1.1",
+		"tslib": "^2.6.2",
 		"tsm": "^2.3.0",
-		"typescript": "^5.1.6",
+		"tsup": "^8.0.1",
+		"typescript": "^5.3.3",
 		"uvu": "^0.5.6"
 	},
 	"lint-staged": {
