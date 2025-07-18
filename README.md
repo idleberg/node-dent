@@ -6,6 +6,9 @@
 [![Version](https://img.shields.io/npm/v/@nsis/dent?style=for-the-badge)](https://www.npmjs.org/package/@nsis/dent)
 [![Build](https://img.shields.io/github/actions/workflow/status/idleberg/node-dent/default.yml?style=for-the-badge)](https://github.com/idleberg/node-dent/actions)
 
+> [!NOTE]  
+> This is the repository for the formatting library. Chances are you are looking for the [CLI tool](https://www.npmjs.com/package/@nsis/dent-cli) instead.
+
 ## Installation
 
 `npm install @nsis/dent`
