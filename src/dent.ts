@@ -53,7 +53,7 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
         .split(' ')
         .at(0) ?? '';
 
-      if (keyword.toLowerCase() === '${Switch}') {
+      if (keyword.toLowerCase() === '${switch}') {
         switchIndentationLevel = indentationLevel;
       }
 
