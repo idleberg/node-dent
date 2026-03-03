@@ -1,4 +1,4 @@
-import { parse as peggyParse } from './grammar.js';
+import { parse as peggyParse } from './grammar.ts';
 
 export type Comment = {
 	style: 'hash' | 'semicolon';
