@@ -35,16 +35,17 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
 		let indentationLevel = 0;
 		let switchIndentationLevel = 0;
 
-		const lineEndings = detectEOL(fileContents);
+		const inputLineEndings = detectInputEOL(fileContents);
+		const outputLineEndings = detectEOL(fileContents);
 		const formattedLines: string[] = [];
 
 		const lines: string[] =
 			mergedOptions.trimEmptyLines === true
 				? fileContents
 						.trim()
-						.replaceAll(/^(\s*\r?\n){2,}/gm, lineEndings)
-						.split(lineEndings)
-				: fileContents.split(lineEndings);
+						.replaceAll(/^(\s*\r?\n){2,}/gm, inputLineEndings)
+						.split(inputLineEndings)
+				: fileContents.split(inputLineEndings);
 
 		lines.forEach((line) => {
 			const keyword: string = line.trim().split(' ').at(0) ?? '';
@@ -87,7 +88,7 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
 			}
 		});
 
-		return formattedLines.join(lineEndings) + lineEndings;
+		return formattedLines.join(outputLineEndings) + outputLineEndings;
 	}
 
 	/**
@@ -102,16 +103,12 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
 	}
 
 	/**
-	 * Detects the end-of-line characters used in the input.
+	 * Detects the end-of-line characters actually used in the input.
 	 *
 	 * @param {string} input - The input string.
 	 * @returns {string} The detected end-of-line characters.
 	 */
-	function detectEOL(input: string): string {
-		if (mergedOptions.endOfLines) {
-			return mergedOptions.endOfLines === 'crlf' ? '\r\n' : '\n';
-		}
-
+	function detectInputEOL(input: string): string {
 		const newLine = detectNewline(input);
 
 		if (newLine !== undefined) {
@@ -119,6 +116,20 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
 		} else {
 			return platform() === 'win32' ? '\r\n' : '\n';
 		}
+	}
+
+	/**
+	 * Determines the desired end-of-line characters for the output.
+	 *
+	 * @param {string} input - The input string (used as fallback for detection).
+	 * @returns {string} The end-of-line characters to use in the output.
+	 */
+	function detectEOL(input: string): string {
+		if (mergedOptions.endOfLines) {
+			return mergedOptions.endOfLines === 'crlf' ? '\r\n' : '\n';
+		}
+
+		return detectInputEOL(input);
 	}
 
 	/**
