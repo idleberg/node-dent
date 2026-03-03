@@ -72,7 +72,9 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
 
         case rules.specialDedenters.includes(keyword.toLowerCase()):
           formattedLines.push(appendLine(line, indentationLevel));
-          indentationLevel--;
+          indentationLevel = indentationLevel === 0
+            ? 0
+            : indentationLevel - 1;
           break;
 
         case rules.indenters.includes(keyword.toLowerCase()):
