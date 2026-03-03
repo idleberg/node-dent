@@ -95,7 +95,7 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
       }
     });
 
-    return formattedLines.join(lineEndings);
+    return formattedLines.join(lineEndings) + lineEndings;
   }
 
   /**

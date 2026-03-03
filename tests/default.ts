@@ -17,8 +17,7 @@ test('Tab indentation', async () => {
 		'utf8'
 	);
 
-	// FIXME there should be no need to trim
-	assert.is(format(fixture), expected.trim());
+	assert.is(format(fixture), expected);
 });
 
 test('Explicit tab indentation', async () => {
@@ -36,8 +35,7 @@ test('Explicit tab indentation', async () => {
 		'utf8'
 	);
 
-	// FIXME there should be no need to trim
-	assert.is(format(fixture), expected.trim());
+	assert.is(format(fixture), expected);
 });
 
 test('Space indentation', async () => {
@@ -55,8 +53,7 @@ test('Space indentation', async () => {
 		'utf8'
 	);
 
-	// FIXME there should be no need to trim
-	assert.is(format(fixture), expected.trim());
+	assert.is(format(fixture), expected);
 });
 
 test('Empty lines', async () => {
@@ -72,8 +69,7 @@ test('Empty lines', async () => {
 		'utf8'
 	);
 
-	// FIXME there should be no need to trim
-	assert.is(format(fixture), expected.trim());
+	assert.is(format(fixture), expected);
 });
 
 test('Explicit empty lines', async () => {
@@ -91,8 +87,7 @@ test('Explicit empty lines', async () => {
 		'utf8'
 	);
 
-	// FIXME there should be no need to trim
-	assert.is(format(fixture), expected.trim());
+	assert.is(format(fixture), expected);
 });
 
 test.run();
