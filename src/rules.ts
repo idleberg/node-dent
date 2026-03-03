@@ -1,4 +1,4 @@
-// TODO: support case-insensitive syntax
+/** biome-ignore-all lint/suspicious/noTemplateCurlyInString: NSIS definitions */
 export const rules = {
 	indenters: [
 		'!if',
@@ -30,7 +30,7 @@ export const rules = {
 		'PageEx',
 		'Section',
 		'SectionGroup',
-	].map(i => i.toLowerCase()),
+	].map((i) => i.toLowerCase()),
 
 	dedenters: [
 		'!endif',
@@ -49,7 +49,7 @@ export const rules = {
 		'PageExEnd',
 		'SectionEnd',
 		'SectionGroupEnd',
-	].map(i => i.toLowerCase()),
+	].map((i) => i.toLowerCase()),
 
 	// These follow indenters, but aren't indented themselves
 	specialIndenters: [
@@ -65,9 +65,7 @@ export const rules = {
 		'${OrIf}',
 		'${OrIfNot}',
 		'${OrUnless}',
-	].map(i => i.toLowerCase()),
+	].map((i) => i.toLowerCase()),
 
-	specialDedenters: [
-		'${Break}'
-	].map(i => i.toLowerCase())
+	specialDedenters: ['${Break}'].map((i) => i.toLowerCase()),
 };
