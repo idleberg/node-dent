@@ -6,7 +6,11 @@ vendor/
 package-lock.json
 yarn-error.log
 yarn.lock
+
+# Build artifacts
 dist/
+src/grammar.js
+src/grammar.d.ts
 
 # Development
 .eslintcache

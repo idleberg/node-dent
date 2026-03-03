@@ -13,13 +13,20 @@ export interface PrinterOptions {
  * Renders a flat list of CST nodes back into formatted NSIS source text.
  *
  * Applies canonical keyword casing, whitespace normalisation,
- * blank-line collapsing, and tree-depth-based indentation.
+ * blank-line collapsing, and stack-based indentation.
  */
 export function print(nodes: CSTNode[], options: PrinterOptions): string {
 	let level = 0;
-	let switchLevel = 0;
-	const lines: string[] = [];
 
+	/**
+	 * Stack of saved indent levels — pushed by every `open` keyword,
+	 * popped by every `close` keyword. This makes nested blocks
+	 * (including `${Switch}` inside `${Switch}`) work automatically
+	 * without ad-hoc saved-level variables.
+	 */
+	const stack: number[] = [];
+
+	const lines: string[] = [];
 	const processedNodes = options.trimEmptyLines ? trimAndCollapseBlanks(nodes) : nodes;
 
 	for (const node of processedNodes) {
@@ -39,26 +46,23 @@ export function print(nodes: CSTNode[], options: PrinterOptions): string {
 			case 'instruction': {
 				const kw = node.keyword.toLowerCase();
 
-				// biome-ignore lint/suspicious/noTemplateCurlyInString: NSIS definition
-				if (kw === '${switch}') {
-					switchLevel = level;
-				}
-
-				// biome-ignore lint/suspicious/noTemplateCurlyInString: NSIS definition
-				if (kw === '${endswitch}') {
-					level = switchLevel;
+				if (rules.open.has(kw)) {
+					// Print at current level, then push & indent
 					lines.push(printInstruction(node, level, options));
-				} else if (rules.specialIndenters.includes(kw)) {
-					lines.push(printInstruction(node, level - 1, options));
-				} else if (rules.specialDedenters.includes(kw)) {
-					lines.push(printInstruction(node, level, options));
-					level = Math.max(0, level - 1);
-				} else if (rules.indenters.includes(kw)) {
-					lines.push(printInstruction(node, level, options));
+					stack.push(level);
 					level++;
-				} else if (rules.dedenters.includes(kw)) {
-					level = Math.max(0, level - 1);
+				} else if (rules.close.has(kw)) {
+					// Pop to the opener's level, then print
+					level = stack.length > 0 ? (stack.pop() as number) : 0;
 					lines.push(printInstruction(node, level, options));
+				} else if (rules.mid.has(kw)) {
+					// Print at the opener's level (one back), keep depth the same
+					const openerLevel = stack.length > 0 ? (stack[stack.length - 1] as number) : 0;
+					lines.push(printInstruction(node, openerLevel, options));
+				} else if (rules.closeAfter.has(kw)) {
+					// Print at current level, then close the arm
+					lines.push(printInstruction(node, level, options));
+					level = stack.length > 0 ? (stack.pop() as number) : 0;
 				} else {
 					lines.push(printInstruction(node, level, options));
 				}
