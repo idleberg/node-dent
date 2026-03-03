@@ -42,6 +42,7 @@
 		"@idleberg/configs": "^0.4.2",
 		"@types/node": "^24.11.0",
 		"concurrently": "^9.2.1",
+		"np": "^11.0.2",
 		"tsdown": "^0.20.3",
 		"tsm": "^2.3.0",
 		"typescript": "^5.3.3",
