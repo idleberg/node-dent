@@ -145,7 +145,7 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
    */
   function getIndentChar(level: number): string {
     return (mergedOptions.useTabs
-      ? '\t'.repeat(mergedOptions.indentSize || defaultIndentation)
+      ? '\t'
       : ' '.repeat(mergedOptions.indentSize || defaultIndentation)
     ).repeat(level);
   }
