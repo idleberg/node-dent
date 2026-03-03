@@ -59,7 +59,6 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
 				case keyword.toLowerCase() === '${endswitch}':
 					indentationLevel = switchIndentationLevel;
 					formattedLines.push(appendLine(line, indentationLevel));
-					indentationLevel = indentationLevel === 0 ? 0 : indentationLevel - 1;
 					break;
 
 				case rules.specialIndenters.includes(keyword.toLowerCase()):
