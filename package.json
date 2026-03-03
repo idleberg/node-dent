@@ -4,7 +4,9 @@
 	"description": "An opinionated code formatter for NSIS scripts",
 	"license": "MIT",
 	"scripts": {
-		"build": "tsdown",
+		"build": "npm run build:peggy && npm run build:lib",
+		"build:peggy": "tsdown",
+		"build:lib": "tsdown",
 		"generate": "peggy --format es --dts -o src/grammar.js src/grammar.pegjs",
 		"dev": "tsdown --watch",
 		"lint": "concurrently --prefix-colors blue,green,magenta npm:lint:*",
