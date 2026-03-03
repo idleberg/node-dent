@@ -6,7 +6,7 @@ declare namespace NsisDent {
 		indentSize?: number;
 		trimEmptyLines?: boolean;
 		useTabs?: boolean;
-	}
+	};
 }
 
 export = NsisDent;
