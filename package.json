@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "tsdown",
+		"generate": "peggy --format es --dts -o src/grammar.js src/grammar.pegjs",
 		"dev": "tsdown --watch",
 		"lint": "concurrently --prefix-colors blue,green,magenta npm:lint:*",
 		"lint:biome": "biome check",
@@ -43,6 +44,7 @@
 		"@types/node": "^24.11.0",
 		"concurrently": "^9.2.1",
 		"np": "^11.0.2",
+		"peggy": "^5.1.0",
 		"tsdown": "^0.20.3",
 		"tsm": "^2.3.0",
 		"typescript": "^5.3.3",
