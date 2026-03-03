@@ -13,7 +13,6 @@ const defaultIndentation = 2;
  */
 export function createFormatter(options: NsisDent.Options = {}): (fileContents: string) => string {
   const mergedOptions: NsisDent.Options = {
-    endOfLines: platform() === 'win32' ? 'crlf' : 'lf',
     indentSize: defaultIndentation,
     trimEmptyLines: true,
     useTabs: true,
