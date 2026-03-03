@@ -19,8 +19,8 @@ export function createFormatter(options: NsisDent.Options = {}): (fileContents: 
     ...options
   };
 
-  if (mergedOptions.useTabs === false && mergedOptions.indentSize) {
-    if (isNaN(mergedOptions.indentSize) || mergedOptions.indentSize <= 0) {
+  if (mergedOptions.useTabs === false) {
+    if (!mergedOptions.indentSize || Number.isNaN(mergedOptions.indentSize) || mergedOptions.indentSize <= 0) {
       throw Error('The indentSize option expects a positive integer');
     }
   }
