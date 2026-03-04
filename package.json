@@ -43,6 +43,8 @@
 		"detect-newline": "^4.0.1"
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^20.4.1",
+		"@commitlint/config-conventional": "^20.4.1",
 		"@idleberg/configs": "^0.4.2",
 		"@types/node": "^24.11.0",
 		"concurrently": "^9.2.1",
