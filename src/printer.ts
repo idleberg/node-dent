@@ -1,4 +1,5 @@
 import { canonicalCasing } from './canonical-casing.ts';
+import { canonicalParameterPrefixes, canonicalParameters } from './canonical-parameters.ts';
 import type { Comment, CommentNode, CSTNode, InstructionNode, LabelNode } from './parser.ts';
 import { rules } from './rules.ts';
 
@@ -104,9 +105,43 @@ function printLabel(node: LabelNode, level: number, options: PrinterOptions): st
 	return line;
 }
 
+function normalizeArg(arg: string): string {
+	// Skip quoted strings and variables — only normalise bare tokens
+	if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`') || arg.startsWith('$')) {
+		return arg;
+	}
+
+	const lower = arg.toLowerCase();
+
+	// Exact match (e.g. /SILENT, true, MB_OK, HKLM)
+	const exact = canonicalParameters.get(lower);
+	if (exact !== undefined) return exact;
+
+	// Pipe-separated compound flags (e.g. MB_OK|MB_ICONEXCLAMATION)
+	if (arg.includes('|')) {
+		return arg
+			.split('|')
+			.map(part => normalizeArg(part))
+			.join('|');
+	}
+
+	// Parameterised prefix (e.g. /LANG=1033, /CHARSET=UTF8)
+	const eqIdx = arg.indexOf('=');
+	if (eqIdx > 0) {
+		const prefixLower = `${lower.slice(0, eqIdx + 1)}`;
+		const canonical = canonicalParameterPrefixes.get(prefixLower);
+		if (canonical !== undefined) {
+			return `${canonical}${arg.slice(eqIdx + 1)}`;
+		}
+	}
+
+	return arg;
+}
+
 function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
 	const keyword = canonicalCasing.get(node.keyword.toLowerCase()) ?? node.keyword;
-	const parts = node.args.length > 0 ? `${keyword} ${node.args.join(' ')}` : keyword;
+	const args = node.args.map(normalizeArg);
+	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 
 	if (node.comment) {
