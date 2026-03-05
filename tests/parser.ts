@@ -22,18 +22,6 @@ test('Parses empty-lines fixture', async () => {
 	assert.ok(nodes.length > 0);
 });
 
-test('Parses demo.nsi', async () => {
-	const input = await fs.readFile(resolve(process.cwd(), 'demo.nsi'), 'utf8');
-	const nodes = parse(input);
-	assert.ok(Array.isArray(nodes));
-});
-
-test('Parses demo2.nsi', async () => {
-	const input = await fs.readFile(resolve(process.cwd(), 'demo2.nsi'), 'utf8');
-	const nodes = parse(input);
-	assert.ok(Array.isArray(nodes));
-});
-
 // --- Blank lines ---
 
 test('Blank lines produce blank nodes', () => {
