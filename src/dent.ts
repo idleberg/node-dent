@@ -5,15 +5,22 @@ import { print } from './printer.ts';
 
 const defaultIndentation = 2;
 
+type Options = {
+	endOfLines?: 'crlf' | 'lf';
+	indentSize?: number;
+	trimEmptyLines?: boolean;
+	useTabs?: boolean;
+};
+
 /**
  * Formats the given file contents using the Dent formatting style.
  *
- * @param {NsisDent.Options} options - The options for the Dent formatter.
+ * @param {Options} options - The options for the Dent formatter.
  * @returns {function(string): string} The formatting function.
  * @throws {Error} Throws an error if the options are invalid.
  */
-export function createFormatter(options: NsisDent.Options = {}): (fileContents: string) => string {
-	const mergedOptions: NsisDent.Options = {
+export function createFormatter(options: Options = {}): (fileContents: string) => string {
+	const mergedOptions: Options = {
 		indentSize: defaultIndentation,
 		trimEmptyLines: true,
 		useTabs: true,
