@@ -12,6 +12,8 @@ function lowerSet(keywords: string[]): Set<string> {
  * - **close** — level decreases first, then printed at the new level.
  * - **mid**   — printed one level *back* (like the opening keyword),
  *               but the level stays the same (e.g. `${Else}`, `!else`).
+ * - **closeAfter** — printed at the *current* level, then level decreases
+ *               (e.g. `${Break}`).
  */
 export const rules = {
 	/** Keywords that open a block (indent children). */
