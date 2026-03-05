@@ -55,7 +55,7 @@ Default: `true`
 
 ## Related
 
-- [CLI](https://www.npmjs.com/package/@nsis/dent-cli)
+- [dent-cli](https://www.npmjs.com/package/@nsis/dent-cli)
 
 ## License
 
