@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noTemplateCurlyInString: NSIS definitions */
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import { createFormatter } from '../src/dent.ts';
@@ -268,6 +269,45 @@ test('Multi-line block comment with space indentation', () => {
 	const format = createFormatter({ useTabs: false, indentSize: 2 });
 	const result = format('Function .onInit\n/*\n  first\n  second\n*/\nFunctionEnd\n');
 	assert.is(result, 'Function .onInit\n  /*\n   first\n   second\n   */\nFunctionEnd\n');
+});
+
+// --- Blank lines around blocks ---
+
+test('No blank line between nested openers (parent→child)', () => {
+	const format = createFormatter();
+	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+	assert.is(result, 'Section "test"\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
+});
+
+test('Blank line before block opener when preceded by non-block', () => {
+	const format = createFormatter();
+	const result = format('Section "test"\nNop\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+	assert.is(result, 'Section "test"\n\tNop\n\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
+});
+
+test('Blank line after block closer when followed by non-block', () => {
+	const format = createFormatter();
+	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nNop\nSectionEnd\n');
+	assert.is(result, 'Section "test"\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\n\n\tNop\nSectionEnd\n');
+});
+
+test('No blank line between nested closers (child→parent)', () => {
+	const format = createFormatter();
+	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+	// ${EndIf} followed by SectionEnd — both closers, no blank
+	assert.ok(!result.includes('\t${EndIf}\n\nSectionEnd'));
+});
+
+test('Blank line between sibling blocks (close→open)', () => {
+	const format = createFormatter();
+	const result = format('Section "a"\nNop\nSectionEnd\nSection "b"\nNop\nSectionEnd\n');
+	assert.is(result, 'Section "a"\n\tNop\nSectionEnd\n\nSection "b"\n\tNop\nSectionEnd\n');
+});
+
+test('No double blank when blank already exists before block', () => {
+	const format = createFormatter({ trimEmptyLines: true });
+	const result = format('Section "test"\nNop\n\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+	assert.is(result, 'Section "test"\n\tNop\n\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
 });
 
 test.run();

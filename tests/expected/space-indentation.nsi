@@ -14,6 +14,7 @@ InstallDir "$PROGRAMFILES\Demo"
 PageEx license
   LicenseText "Readme"
 PageExEnd
+
 Page components
 Page directory
 Page instfiles
@@ -67,9 +68,11 @@ SectionGroup "LogicLib.nsh"
       ${Case} 1
         Nop
         ${Break}
+
       ${Case} 2
         Nop
         ${Break}
+
       ${Default}
         Nop
         ${Break}

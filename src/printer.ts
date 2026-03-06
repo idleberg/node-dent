@@ -28,9 +28,12 @@ export function print(nodes: CSTNode[], options: PrinterOptions): string {
 	const stack: number[] = [];
 
 	const lines: string[] = [];
-	const processedNodes = options.trimEmptyLines ? trimAndCollapseBlanks(nodes) : nodes;
+	let processed = ensureBlankAroundBlocks(nodes);
+	if (options.trimEmptyLines) {
+		processed = trimAndCollapseBlanks(processed);
+	}
 
-	for (const node of processedNodes) {
+	for (const node of processed) {
 		switch (node.type) {
 			case 'blank':
 				lines.push('');
@@ -191,6 +194,57 @@ function printInstruction(node: InstructionNode, level: number, options: Printer
 function printTrailingComment(comment: Comment): string {
 	const marker = comment.style === 'hash' ? '#' : ';';
 	return `${marker} ${comment.value}`;
+}
+
+/**
+ * Checks whether a node is a block-opening instruction.
+ */
+function isBlockOpen(node: CSTNode): boolean {
+	return node.type === 'instruction' && rules.open.has(node.keyword.toLowerCase());
+}
+
+/**
+ * Checks whether a node is a block-closing instruction.
+ */
+function isBlockClose(node: CSTNode): boolean {
+	return node.type === 'instruction' && rules.close.has(node.keyword.toLowerCase());
+}
+
+/**
+ * Ensures blank lines exist between block boundaries and non-block
+ * statements. Inserts blanks:
+ *
+ * - Before a block opener if preceded by a non-block, non-comment node
+ * - After a block closer if followed by any non-block node (including comments)
+ *
+ * Comments before a block opener are exempt — they describe the upcoming
+ * block and should stay attached to it.
+ */
+function ensureBlankAroundBlocks(nodes: CSTNode[]): CSTNode[] {
+	const result: CSTNode[] = [];
+	let prevNonBlank: CSTNode | undefined;
+
+	for (const node of nodes) {
+		const lastIsBlank = result.length > 0 && (result[result.length - 1] as CSTNode).type === 'blank';
+
+		if (prevNonBlank && !lastIsBlank && node.type !== 'blank') {
+			// Before an open keyword: insert blank if prev is a regular instruction
+			if (isBlockOpen(node) && !isBlockOpen(prevNonBlank) && prevNonBlank.type !== 'comment') {
+				result.push({ type: 'blank' });
+			}
+			// After a close keyword: insert blank if current is not another closer or opener
+			else if (isBlockClose(prevNonBlank) && !isBlockClose(node) && !isBlockOpen(node)) {
+				result.push({ type: 'blank' });
+			}
+		}
+
+		result.push(node);
+		if (node.type !== 'blank') {
+			prevNonBlank = node;
+		}
+	}
+
+	return result;
 }
 
 /**
