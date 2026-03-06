@@ -5,7 +5,7 @@ import { print } from './printer.ts';
 
 const defaultIndentation = 2;
 
-type Options = {
+export type DentOptions = {
 	endOfLines?: 'crlf' | 'lf';
 	indentSize?: number;
 	trimEmptyLines?: boolean;
@@ -19,8 +19,8 @@ type Options = {
  * @returns {function(string): string} The formatting function.
  * @throws {Error} Throws an error if the options are invalid.
  */
-export function createFormatter(options: Options = {}): (fileContents: string) => string {
-	const mergedOptions: Options = {
+export function createFormatter(options: DentOptions = {}): (fileContents: string) => string {
+	const mergedOptions: DentOptions = {
 		indentSize: defaultIndentation,
 		trimEmptyLines: true,
 		useTabs: true,
