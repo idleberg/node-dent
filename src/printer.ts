@@ -224,13 +224,23 @@ function ensureBlankAroundBlocks(nodes: CSTNode[]): CSTNode[] {
 	const result: CSTNode[] = [];
 	let prevNonBlank: CSTNode | undefined;
 
-	for (const node of nodes) {
+	for (let i = 0; i < nodes.length; i++) {
+		const node = nodes[i] as CSTNode;
 		const lastIsBlank = result.length > 0 && (result[result.length - 1] as CSTNode).type === 'blank';
 
 		if (prevNonBlank && !lastIsBlank && node.type !== 'blank') {
 			// Before an open keyword: insert blank if prev is a regular instruction
 			if (isBlockOpen(node) && !isBlockOpen(prevNonBlank) && prevNonBlank.type !== 'comment') {
 				result.push({ type: 'blank' });
+			}
+			// Before a comment that leads into a block opener
+			else if (node.type === 'comment' && !isBlockOpen(prevNonBlank) && prevNonBlank.type !== 'comment') {
+				let j = i + 1;
+				while (j < nodes.length && ((nodes[j] as CSTNode).type === 'blank' || (nodes[j] as CSTNode).type === 'comment'))
+					j++;
+				if (j < nodes.length && isBlockOpen(nodes[j] as CSTNode)) {
+					result.push({ type: 'blank' });
+				}
 			}
 			// After a close keyword: insert blank if current is not another closer or opener
 			else if (isBlockClose(prevNonBlank) && !isBlockClose(node) && !isBlockOpen(node)) {

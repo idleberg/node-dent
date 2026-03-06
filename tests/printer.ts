@@ -273,41 +273,62 @@ test('Multi-line block comment with space indentation', () => {
 
 // --- Blank lines around blocks ---
 
-test('No blank line between nested openers (parent→child)', () => {
-	const format = createFormatter();
-	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
-	assert.is(result, 'Section "test"\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
-});
+for (const trimEmptyLines of [true, false]) {
+	const label = `trimEmptyLines: ${trimEmptyLines}`;
 
-test('Blank line before block opener when preceded by non-block', () => {
-	const format = createFormatter();
-	const result = format('Section "test"\nNop\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
-	assert.is(result, 'Section "test"\n\tNop\n\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
-});
+	test(`No blank line between nested openers (parent→child) [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+		assert.is(result, 'Section "test"\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
+	});
 
-test('Blank line after block closer when followed by non-block', () => {
-	const format = createFormatter();
-	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nNop\nSectionEnd\n');
-	assert.is(result, 'Section "test"\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\n\n\tNop\nSectionEnd\n');
-});
+	test(`Blank line before block opener when preceded by non-block [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Section "test"\nNop\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+		assert.is(result, 'Section "test"\n\tNop\n\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
+	});
 
-test('No blank line between nested closers (child→parent)', () => {
-	const format = createFormatter();
-	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
-	// ${EndIf} followed by SectionEnd — both closers, no blank
-	assert.ok(!result.includes('\t${EndIf}\n\nSectionEnd'));
-});
+	test(`Blank line after block closer when followed by non-block [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nNop\nSectionEnd\n');
+		assert.is(result, 'Section "test"\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\n\n\tNop\nSectionEnd\n');
+	});
 
-test('Blank line between sibling blocks (close→open)', () => {
-	const format = createFormatter();
-	const result = format('Section "a"\nNop\nSectionEnd\nSection "b"\nNop\nSectionEnd\n');
-	assert.is(result, 'Section "a"\n\tNop\nSectionEnd\n\nSection "b"\n\tNop\nSectionEnd\n');
-});
+	test(`No blank line between nested closers (child→parent) [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+		assert.ok(!result.includes('\t${EndIf}\n\nSectionEnd'));
+	});
 
-test('No double blank when blank already exists before block', () => {
-	const format = createFormatter({ trimEmptyLines: true });
-	const result = format('Section "test"\nNop\n\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
-	assert.is(result, 'Section "test"\n\tNop\n\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
-});
+	test(`Blank line between sibling blocks (close→open) [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Section "a"\nNop\nSectionEnd\nSection "b"\nNop\nSectionEnd\n');
+		assert.is(result, 'Section "a"\n\tNop\nSectionEnd\n\nSection "b"\n\tNop\nSectionEnd\n');
+	});
+
+	test(`No double blank when blank already exists before block [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Section "test"\nNop\n\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
+		assert.is(result, 'Section "test"\n\tNop\n\n\t${If} 1 == 1\n\t\tNop\n\t${EndIf}\nSectionEnd\n');
+	});
+
+	test(`Blank line before comment that precedes a block opener [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Page instfiles\n# some comment\nSection "test"\nNop\nSectionEnd\n');
+		assert.is(result, 'Page instfiles\n\n# some comment\nSection "test"\n\tNop\nSectionEnd\n');
+	});
+
+	test(`No double blank when blank already exists before comment + block opener [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Page instfiles\n\n# some comment\nSection "test"\nNop\nSectionEnd\n');
+		assert.ok(!result.includes('\n\n\n'));
+	});
+
+	test(`Multiple comments before a block opener get blank before first [${label}]`, () => {
+		const format = createFormatter({ trimEmptyLines });
+		const result = format('Page instfiles\n# first\n# second\nSection "test"\nNop\nSectionEnd\n');
+		assert.is(result, 'Page instfiles\n\n# first\n# second\nSection "test"\n\tNop\nSectionEnd\n');
+	});
+}
 
 test.run();
