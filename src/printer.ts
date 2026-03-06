@@ -88,7 +88,19 @@ function printComment(node: CommentNode, level: number, options: PrinterOptions)
 	const prefix = indentStr(level, options);
 
 	if (node.style === 'block') {
-		return `${prefix}/*${node.value}*/`;
+		const lines = node.value.split(/\r?\n/);
+
+		if (lines.length === 1) {
+			return `${prefix}/*${node.value}*/`;
+		}
+
+		return lines
+			.map((line, i) => {
+				if (i === 0) return `${prefix}/*${line}`;
+				if (i === lines.length - 1) return `${prefix}${line.trimStart()}*/`;
+				return `${prefix}${line.trimStart()}`;
+			})
+			.join(options.eol);
 	}
 
 	const marker = node.style === 'hash' ? '#' : ';';

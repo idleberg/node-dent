@@ -232,4 +232,36 @@ test('Multiple spaced pipe flags are all collapsed', () => {
 	assert.is(result, 'MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "Sure?"\n');
 });
 
+// --- Block comments ---
+
+test('Single-line block comment is preserved', () => {
+	const format = createFormatter();
+	const result = format('/* hello */\n');
+	assert.is(result, '/* hello */\n');
+});
+
+test('Single-line block comment is indented inside a block', () => {
+	const format = createFormatter();
+	const result = format('Function .onInit\n/* hello */\nFunctionEnd\n');
+	assert.is(result, 'Function .onInit\n\t/* hello */\nFunctionEnd\n');
+});
+
+test('Multi-line block comment is re-indented inside a block', () => {
+	const format = createFormatter();
+	const result = format('Function .onInit\n/*\n line one\n line two\n*/\nNop\nFunctionEnd\n');
+	assert.is(result, 'Function .onInit\n\t/*\n\tline one\n\tline two\n\t*/\n\tNop\nFunctionEnd\n');
+});
+
+test('Multi-line block comment at top level has no indentation', () => {
+	const format = createFormatter();
+	const result = format('/*\n line one\n line two\n*/\n');
+	assert.is(result, '/*\nline one\nline two\n*/\n');
+});
+
+test('Multi-line block comment with space indentation', () => {
+	const format = createFormatter({ useTabs: false, indentSize: 2 });
+	const result = format('Function .onInit\n/*\n  first\n  second\n*/\nFunctionEnd\n');
+	assert.is(result, 'Function .onInit\n  /*\n  first\n  second\n  */\nFunctionEnd\n');
+});
+
 test.run();
