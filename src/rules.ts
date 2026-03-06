@@ -1,6 +1,23 @@
 /** biome-ignore-all lint/suspicious/noTemplateCurlyInString: NSIS definitions */
+
+/** Lowercase helper – builds a Set keyed by lowercase for O(1) lookup. */
+function lowerSet(keywords: string[]): Set<string> {
+	return new Set(keywords.map((k) => k.toLowerCase()));
+}
+
+/**
+ * Keyword roles for indentation.
+ *
+ * - **open**  — printed at the *current* level, then level increases.
+ * - **close** — level decreases first, then printed at the new level.
+ * - **mid**   — printed one level *back* (like the opening keyword),
+ *               but the level stays the same (e.g. `${Else}`, `!else`).
+ * - **closeAfter** — printed at the *current* level, then level decreases
+ *               (e.g. `${Break}`).
+ */
 export const rules = {
-	indenters: [
+	/** Keywords that open a block (indent children). */
+	open: lowerSet([
 		'!if',
 		'!ifdef',
 		'!ifmacrodef',
@@ -30,9 +47,10 @@ export const rules = {
 		'PageEx',
 		'Section',
 		'SectionGroup',
-	].map((i) => i.toLowerCase()),
+	]),
 
-	dedenters: [
+	/** Keywords that close a block (dedent to the opener's level). */
+	close: lowerSet([
 		'!endif',
 		'!macroend',
 		'${EndIf}',
@@ -49,10 +67,16 @@ export const rules = {
 		'PageExEnd',
 		'SectionEnd',
 		'SectionGroupEnd',
-	].map((i) => i.toLowerCase()),
+	]),
 
-	// These follow indenters, but aren't indented themselves
-	specialIndenters: [
+	/**
+	 * Mid-block keywords — printed at the *parent* level (one back),
+	 * but they don't change the indentation depth.
+	 *
+	 * Example: `${Else}` aligns with `${If}`, and the body after it
+	 * stays one level deeper.
+	 */
+	mid: lowerSet([
 		'!else',
 		'!elseif',
 		'${Else}',
@@ -65,7 +89,11 @@ export const rules = {
 		'${OrIf}',
 		'${OrIfNot}',
 		'${OrUnless}',
-	].map((i) => i.toLowerCase()),
+	]),
 
-	specialDedenters: ['${Break}'].map((i) => i.toLowerCase()),
+	/**
+	 * Keyword printed at the *current* level, then level decreases.
+	 * Used for `${Break}` — it's the last statement in a case arm.
+	 */
+	closeAfter: lowerSet(['${Break}']),
 };

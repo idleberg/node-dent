@@ -1,0 +1,224 @@
+import { canonicalCasing } from './canonical-casing.ts';
+import { canonicalParameterPrefixes, canonicalParameters } from './canonical-parameters.ts';
+import type { Comment, CommentNode, CSTNode, InstructionNode, LabelNode } from './parser.ts';
+import { rules } from './rules.ts';
+
+export interface PrinterOptions {
+	useTabs: boolean;
+	indentSize: number;
+	trimEmptyLines: boolean;
+	eol: string;
+}
+
+/**
+ * Renders a flat list of CST nodes back into formatted NSIS source text.
+ *
+ * Applies canonical keyword casing, whitespace normalisation,
+ * blank-line collapsing, and stack-based indentation.
+ */
+export function print(nodes: CSTNode[], options: PrinterOptions): string {
+	let level = 0;
+
+	/**
+	 * Stack of saved indent levels — pushed by every `open` keyword,
+	 * popped by every `close` keyword. This makes nested blocks
+	 * (including `${Switch}` inside `${Switch}`) work automatically
+	 * without ad-hoc saved-level variables.
+	 */
+	const stack: number[] = [];
+
+	const lines: string[] = [];
+	const processedNodes = options.trimEmptyLines ? trimAndCollapseBlanks(nodes) : nodes;
+
+	for (const node of processedNodes) {
+		switch (node.type) {
+			case 'blank':
+				lines.push('');
+				break;
+
+			case 'comment':
+				lines.push(printComment(node, level, options));
+				break;
+
+			case 'label':
+				lines.push(printLabel(node, level, options));
+				break;
+
+			case 'instruction': {
+				const kw = node.keyword.toLowerCase();
+
+				if (rules.open.has(kw)) {
+					// Print at current level, then push & indent
+					lines.push(printInstruction(node, level, options));
+					stack.push(level);
+					level++;
+				} else if (rules.close.has(kw)) {
+					// Pop to the opener's level, then print
+					level = stack.length > 0 ? (stack.pop() as number) : 0;
+					lines.push(printInstruction(node, level, options));
+				} else if (rules.mid.has(kw)) {
+					// Print at the opener's level (one back), keep depth the same
+					const openerLevel = stack.length > 0 ? (stack[stack.length - 1] as number) : 0;
+					lines.push(printInstruction(node, openerLevel, options));
+				} else if (rules.closeAfter.has(kw)) {
+					// Print at current level, then close the arm
+					lines.push(printInstruction(node, level, options));
+					level = stack.length > 0 ? (stack.pop() as number) : 0;
+				} else {
+					lines.push(printInstruction(node, level, options));
+				}
+				break;
+			}
+		}
+	}
+
+	return lines.join(options.eol) + options.eol;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function indentStr(level: number, options: PrinterOptions): string {
+	const char = options.useTabs ? '\t' : ' '.repeat(options.indentSize);
+	return char.repeat(level);
+}
+
+function printComment(node: CommentNode, level: number, options: PrinterOptions): string {
+	const prefix = indentStr(level, options);
+
+	if (node.style === 'block') {
+		const lines = node.value.split(/\r?\n/);
+
+		if (lines.length === 1) {
+			return `${prefix}/*${node.value}*/`;
+		}
+
+		return lines
+			.map((line, i) => {
+				if (i === 0) return `${prefix}/*${line}`;
+				const stripped = line.trimStart();
+				if (i === lines.length - 1) return `${prefix} ${stripped}*/`;
+				return `${prefix} ${stripped}`;
+			})
+			.join(options.eol);
+	}
+
+	const marker = node.style === 'hash' ? '#' : ';';
+	return `${prefix}${marker} ${node.value}`;
+}
+
+function printLabel(node: LabelNode, level: number, options: PrinterOptions): string {
+	let line = `${indentStr(level, options)}${node.name}:`;
+
+	if (node.comment) {
+		line += ` ${printTrailingComment(node.comment)}`;
+	}
+
+	return line;
+}
+
+function normalizeArg(arg: string): string {
+	// Skip quoted strings and variables — only normalise bare tokens
+	if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`') || arg.startsWith('$')) {
+		return arg;
+	}
+
+	const lower = arg.toLowerCase();
+
+	// Exact match (e.g. /SILENT, true, MB_OK, HKLM)
+	const exact = canonicalParameters.get(lower);
+	if (exact !== undefined) return exact;
+
+	// Pipe-separated compound flags (e.g. MB_OK|MB_ICONEXCLAMATION)
+	if (arg.includes('|')) {
+		return arg
+			.split('|')
+			.map((part) => normalizeArg(part))
+			.join('|');
+	}
+
+	// Parameterised prefix (e.g. /LANG=1033, /CHARSET=UTF8)
+	const eqIdx = arg.indexOf('=');
+	if (eqIdx > 0) {
+		const prefixLower = `${lower.slice(0, eqIdx + 1)}`;
+		const canonical = canonicalParameterPrefixes.get(prefixLower);
+		if (canonical !== undefined) {
+			return `${canonical}${arg.slice(eqIdx + 1)}`;
+		}
+	}
+
+	return arg;
+}
+
+/**
+ * Collapses spaced pipe sequences (`FLAG | FLAG`) into the compact
+ * NSIS-idiomatic form (`FLAG|FLAG`).
+ *
+ * Works by absorbing bare `|` tokens and their neighbours into a single token.
+ */
+function collapsePipeFlags(args: string[]): string[] {
+	return args.reduce<string[]>((result, arg) => {
+		const last = result[result.length - 1];
+
+		if (arg === '|' && result.length > 0) {
+			// Absorb the pipe onto the previous token
+			result[result.length - 1] = `${last}|`;
+		} else if (last?.endsWith('|')) {
+			// Previous token absorbed a pipe — append this token to it
+			result[result.length - 1] = `${last}${arg}`;
+		} else {
+			result.push(arg);
+		}
+
+		return result;
+	}, []);
+}
+
+function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
+	const keyword = canonicalCasing.get(node.keyword.toLowerCase()) ?? node.keyword;
+	const args = collapsePipeFlags(node.args.map(normalizeArg));
+	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
+	let line = `${indentStr(level, options)}${parts}`;
+
+	if (node.comment) {
+		line += ` ${printTrailingComment(node.comment)}`;
+	}
+
+	return line;
+}
+
+function printTrailingComment(comment: Comment): string {
+	const marker = comment.style === 'hash' ? '#' : ';';
+	return `${marker} ${comment.value}`;
+}
+
+/**
+ * Strips leading/trailing blank nodes and collapses consecutive blanks
+ * to at most one.
+ */
+function trimAndCollapseBlanks(nodes: CSTNode[]): CSTNode[] {
+	let start = 0;
+	while (start < nodes.length && (nodes[start] as CSTNode).type === 'blank') start++;
+
+	let end = nodes.length - 1;
+	while (end >= start && (nodes[end] as CSTNode).type === 'blank') end--;
+
+	const result: CSTNode[] = [];
+	let prevBlank = false;
+
+	for (let i = start; i <= end; i++) {
+		const node = nodes[i] as CSTNode;
+		if (node.type === 'blank') {
+			if (!prevBlank) {
+				result.push(node);
+				prevBlank = true;
+			}
+		} else {
+			result.push(node);
+			prevBlank = false;
+		}
+	}
+
+	return result;
+}

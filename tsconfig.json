@@ -1,8 +1,7 @@
 {
 	"extends": "@idleberg/configs/tsc",
-	"compilerOptions": {
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
-		"types": ["@types/node"]
-	}
+	"exclude": [
+		// Generated file
+		"src/grammar.js"
+	]
 }

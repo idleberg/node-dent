@@ -8,7 +8,7 @@ export default defineConfig((options) => {
 		clean: isProduction,
 		dts: isProduction,
 		entry: ['src/dent.ts'],
-		external: ['detect-newline'],
+		neverBundle: ['detect-newline'],
 		format: 'esm',
 		minify: isProduction,
 	};
