@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noTemplateCurlyInString: NSIS definitions */
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import { createFormatter } from '../src/dent.ts';
@@ -294,7 +295,7 @@ test('No blank line between nested closers (child→parent)', () => {
 	const format = createFormatter();
 	const result = format('Section "test"\n${If} 1 == 1\nNop\n${EndIf}\nSectionEnd\n');
 	// ${EndIf} followed by SectionEnd — both closers, no blank
-	assert.ok(!result.includes('${EndIf}\n\nSectionEnd'));
+	assert.ok(!result.includes('\t${EndIf}\n\nSectionEnd'));
 });
 
 test('Blank line between sibling blocks (close→open)', () => {
