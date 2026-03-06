@@ -246,22 +246,28 @@ test('Single-line block comment is indented inside a block', () => {
 	assert.is(result, 'Function .onInit\n\t/* hello */\nFunctionEnd\n');
 });
 
+test('JSDoc-style block comment preserves star alignment', () => {
+	const format = createFormatter();
+	const result = format('Function .onInit\n/**\n * description\n */\nNop\nFunctionEnd\n');
+	assert.is(result, 'Function .onInit\n\t/**\n\t * description\n\t */\n\tNop\nFunctionEnd\n');
+});
+
 test('Multi-line block comment is re-indented inside a block', () => {
 	const format = createFormatter();
 	const result = format('Function .onInit\n/*\n line one\n line two\n*/\nNop\nFunctionEnd\n');
-	assert.is(result, 'Function .onInit\n\t/*\n\tline one\n\tline two\n\t*/\n\tNop\nFunctionEnd\n');
+	assert.is(result, 'Function .onInit\n\t/*\n\t line one\n\t line two\n\t */\n\tNop\nFunctionEnd\n');
 });
 
 test('Multi-line block comment at top level has no indentation', () => {
 	const format = createFormatter();
 	const result = format('/*\n line one\n line two\n*/\n');
-	assert.is(result, '/*\nline one\nline two\n*/\n');
+	assert.is(result, '/*\n line one\n line two\n */\n');
 });
 
 test('Multi-line block comment with space indentation', () => {
 	const format = createFormatter({ useTabs: false, indentSize: 2 });
 	const result = format('Function .onInit\n/*\n  first\n  second\n*/\nFunctionEnd\n');
-	assert.is(result, 'Function .onInit\n  /*\n  first\n  second\n  */\nFunctionEnd\n');
+	assert.is(result, 'Function .onInit\n  /*\n   first\n   second\n   */\nFunctionEnd\n');
 });
 
 test.run();

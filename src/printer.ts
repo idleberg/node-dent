@@ -97,8 +97,9 @@ function printComment(node: CommentNode, level: number, options: PrinterOptions)
 		return lines
 			.map((line, i) => {
 				if (i === 0) return `${prefix}/*${line}`;
-				if (i === lines.length - 1) return `${prefix}${line.trimStart()}*/`;
-				return `${prefix}${line.trimStart()}`;
+				const stripped = line.trimStart();
+				if (i === lines.length - 1) return `${prefix} ${stripped}*/`;
+				return `${prefix} ${stripped}`;
 			})
 			.join(options.eol);
 	}
