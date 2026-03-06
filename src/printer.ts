@@ -227,7 +227,7 @@ function ensureBlankAroundBlocks(nodes: CSTNode[]): CSTNode[] {
 	for (const node of nodes) {
 		const lastIsBlank = result.length > 0 && (result[result.length - 1] as CSTNode).type === 'blank';
 
-		if (prevNonBlank && !lastIsBlank) {
+		if (prevNonBlank && !lastIsBlank && node.type !== 'blank') {
 			// Before an open keyword: insert blank if prev is a regular instruction
 			if (isBlockOpen(node) && !isBlockOpen(prevNonBlank) && prevNonBlank.type !== 'comment') {
 				result.push({ type: 'blank' });
