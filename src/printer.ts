@@ -1,5 +1,5 @@
 import { canonicalCasing } from './canonical-casing.ts';
-import { canonicalParameterPrefixes, canonicalParameters } from './canonical-parameters.ts';
+import { globalParameterPrefixes, globalParameters, instructionParameters } from './canonical-parameters.ts';
 import type { Comment, CommentNode, CSTNode, InstructionNode, LabelNode } from './parser.ts';
 import { rules } from './rules.ts';
 
@@ -121,7 +121,7 @@ function printLabel(node: LabelNode, level: number, options: PrinterOptions): st
 	return line;
 }
 
-function normalizeArg(arg: string): string {
+function normalizeArg(arg: string, instrParams: ReadonlyMap<string, string> | undefined): string {
 	// Skip quoted strings and variables — only normalise bare tokens
 	if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`') || arg.startsWith('$')) {
 		return arg;
@@ -129,15 +129,15 @@ function normalizeArg(arg: string): string {
 
 	const lower = arg.toLowerCase();
 
-	// Exact match (e.g. /SILENT, true, MB_OK, HKLM)
-	const exact = canonicalParameters.get(lower);
+	// Exact match — check instruction-specific params first, then global
+	const exact = instrParams?.get(lower) ?? globalParameters.get(lower);
 	if (exact !== undefined) return exact;
 
 	// Pipe-separated compound flags (e.g. MB_OK|MB_ICONEXCLAMATION)
 	if (arg.includes('|')) {
 		return arg
 			.split('|')
-			.map((part) => normalizeArg(part))
+			.map((part) => normalizeArg(part, instrParams))
 			.join('|');
 	}
 
@@ -145,7 +145,7 @@ function normalizeArg(arg: string): string {
 	const eqIdx = arg.indexOf('=');
 	if (eqIdx > 0) {
 		const prefixLower = `${lower.slice(0, eqIdx + 1)}`;
-		const canonical = canonicalParameterPrefixes.get(prefixLower);
+		const canonical = globalParameterPrefixes.get(prefixLower);
 		if (canonical !== undefined) {
 			return `${canonical}${arg.slice(eqIdx + 1)}`;
 		}
@@ -155,8 +155,10 @@ function normalizeArg(arg: string): string {
 }
 
 function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
-	const keyword = canonicalCasing.get(node.keyword.toLowerCase()) ?? node.keyword;
-	const args = node.args.map(normalizeArg);
+	const kwLower = node.keyword.toLowerCase();
+	const keyword = canonicalCasing.get(kwLower) ?? node.keyword;
+	const instrParams = instructionParameters.get(kwLower);
+	const args = node.args.map((arg) => normalizeArg(arg, instrParams));
 	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 

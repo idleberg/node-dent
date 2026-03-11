@@ -215,6 +215,58 @@ test('MessageBox return value is normalised to uppercase', () => {
 	assert.is(result, 'MessageBox MB_YESNO "Sure?" IDYES done\n');
 });
 
+// --- Instruction-scoped parameter normalization ---
+
+test('Compiler directive arguments are not normalised', () => {
+	const format = createFormatter();
+	const result = format('!if A|B\n');
+	assert.is(result, '!if A|B\n');
+});
+
+test('Compiler directive does not lowercase single-letter args', () => {
+	const format = createFormatter();
+	const result = format('!if A == B\n');
+	assert.is(result, '!if A == B\n');
+});
+
+test('FileOpen mode is normalised only for FileOpen', () => {
+	const format = createFormatter();
+	assert.is(format('FileOpen $0 "file" A\n'), 'FileOpen $0 "file" a\n');
+});
+
+test('FileOpen mode "a" is not normalised for other instructions', () => {
+	const format = createFormatter();
+	assert.is(format('StrCpy $0 a\n'), 'StrCpy $0 a\n');
+});
+
+test('Boolean TRUE is normalised for Unicode but not for unknown instructions', () => {
+	const format = createFormatter();
+	assert.is(format('Unicode TRUE\n'), 'Unicode true\n');
+	assert.is(format('Name TRUE\n'), 'Name TRUE\n');
+});
+
+test('Registry root key is normalised only for registry instructions', () => {
+	const format = createFormatter();
+	assert.is(format('WriteRegStr hklm "key" "name" "value"\n'), 'WriteRegStr HKLM "key" "name" "value"\n');
+	assert.is(format('StrCpy $0 hklm\n'), 'StrCpy $0 hklm\n');
+});
+
+test('MessageBox flags are not normalised for other instructions', () => {
+	const format = createFormatter();
+	assert.is(format('StrCpy $0 mb_ok\n'), 'StrCpy $0 mb_ok\n');
+});
+
+test('ShowWindow constant is not normalised for non-ShowWindow instructions', () => {
+	const format = createFormatter();
+	assert.is(format('StrCpy $0 sw_hide\n'), 'StrCpy $0 sw_hide\n');
+});
+
+test('Slash flags are normalised globally regardless of instruction', () => {
+	const format = createFormatter();
+	assert.is(format('CopyFiles /silent "src" "dst"\n'), 'CopyFiles /SILENT "src" "dst"\n');
+	assert.is(format('Delete /rebootok "file.exe"\n'), 'Delete /REBOOTOK "file.exe"\n');
+});
+
 // --- Block comments ---
 
 test('Single-line block comment is preserved', () => {
