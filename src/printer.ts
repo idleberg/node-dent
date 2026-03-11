@@ -133,12 +133,13 @@ function normalizeArg(arg: string, instrParams: ReadonlyMap<string, string> | un
 	const exact = instrParams?.get(lower) ?? globalParameters.get(lower);
 	if (exact !== undefined) return exact;
 
-	// Pipe-separated compound flags (e.g. MB_OK|MB_ICONEXCLAMATION)
-	if (arg.includes('|')) {
+	// Pipe-separated compound flags (e.g. MB_OK|MB_ICONEXCLAMATION → MB_OK | MB_ICONEXCLAMATION)
+	// Skip standalone `|` tokens — those are already space-separated by the parser.
+	if (arg.includes('|') && arg !== '|') {
 		return arg
 			.split('|')
 			.map((part) => normalizeArg(part, instrParams))
-			.join('|');
+			.join(' | ');
 	}
 
 	// Parameterised prefix (e.g. /LANG=1033, /CHARSET=UTF8)

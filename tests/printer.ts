@@ -161,10 +161,10 @@ test('MessageBox flags are normalised to uppercase', () => {
 	assert.is(result, 'MessageBox MB_YESNO "Sure?"\n');
 });
 
-test('Pipe-separated MessageBox flags are each normalised', () => {
+test('Pipe-separated MessageBox flags are normalised and spaced', () => {
 	const format = createFormatter();
 	const result = format('MessageBox mb_ok|mb_iconexclamation "Hello"\n');
-	assert.is(result, 'MessageBox MB_OK|MB_ICONEXCLAMATION "Hello"\n');
+	assert.is(result, 'MessageBox MB_OK | MB_ICONEXCLAMATION "Hello"\n');
 });
 
 test('Boolean parameter is normalised to lowercase', () => {
@@ -217,10 +217,10 @@ test('MessageBox return value is normalised to uppercase', () => {
 
 // --- Instruction-scoped parameter normalization ---
 
-test('Compiler directive arguments are not normalised', () => {
+test('Compiler directive pipe is spaced but args are not normalised', () => {
 	const format = createFormatter();
 	const result = format('!if A|B\n');
-	assert.is(result, '!if A|B\n');
+	assert.is(result, '!if A | B\n');
 });
 
 test('Compiler directive does not lowercase single-letter args', () => {
@@ -265,6 +265,38 @@ test('Slash flags are normalised globally regardless of instruction', () => {
 	const format = createFormatter();
 	assert.is(format('CopyFiles /silent "src" "dst"\n'), 'CopyFiles /SILENT "src" "dst"\n');
 	assert.is(format('Delete /rebootok "file.exe"\n'), 'Delete /REBOOTOK "file.exe"\n');
+});
+
+// --- Pipe whitespace normalization ---
+
+test('Compact pipe flags are expanded to spaced form', () => {
+	const format = createFormatter();
+	const result = format('MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "Sure?"\n');
+	assert.is(result, 'MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
+});
+
+test('Already-spaced pipe flags remain spaced', () => {
+	const format = createFormatter();
+	const result = format('MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+});
+
+test('Spaced pipe flags with wrong casing are normalised', () => {
+	const format = createFormatter();
+	const result = format('MessageBox mb_ok | mb_iconexclamation "Hello"\n');
+	assert.is(result, 'MessageBox MB_OK | MB_ICONEXCLAMATION "Hello"\n');
+});
+
+test('Multiple spaced pipe flags are normalised', () => {
+	const format = createFormatter();
+	const result = format('MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
+	assert.is(result, 'MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
+});
+
+test('Compiler directive spaced pipe is preserved', () => {
+	const format = createFormatter();
+	const result = format('!if A | B\n');
+	assert.is(result, '!if A | B\n');
 });
 
 // --- Block comments ---
