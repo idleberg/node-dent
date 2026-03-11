@@ -119,302 +119,408 @@ function register(instructions: string[], params: [string, string][]): void {
 
 // --- Boolean values ---
 
-register([
-	'AllowRootDirInstall', 'AllowSkipFiles', 'AutoCloseWindow',
-	'CRCCheck', 'ManifestDPIAware', 'ManifestDisableWindowFiltering',
-	'ManifestGdiScaling', 'ManifestLongPathAware', 'SetAutoClose',
-	'SetDatablockOptimize', 'SetDateSave', 'SetPluginUnload',
-	'Unicode', 'WindowIcon',
-], [
-	['true', 'true'],
-	['false', 'false'],
-]);
+register(
+	[
+		'AllowRootDirInstall',
+		'AllowSkipFiles',
+		'AutoCloseWindow',
+		'CRCCheck',
+		'ManifestDPIAware',
+		'ManifestDisableWindowFiltering',
+		'ManifestGdiScaling',
+		'ManifestLongPathAware',
+		'SetAutoClose',
+		'SetDatablockOptimize',
+		'SetDateSave',
+		'SetPluginUnload',
+		'Unicode',
+		'WindowIcon',
+	],
+	[
+		['true', 'true'],
+		['false', 'false'],
+	],
+);
 
-register([
-	'CRCCheck', 'LogSet', 'LockWindow', 'SetCompress', 'SetDateSave',
-	'SetDatablockOptimize', 'SetOverwrite', 'WindowIcon', 'XPStyle',
-	'LicenseForceSelection',
-], [
-	['on', 'on'],
-	['off', 'off'],
-]);
+register(
+	[
+		'CRCCheck',
+		'LogSet',
+		'LockWindow',
+		'SetCompress',
+		'SetDateSave',
+		'SetDatablockOptimize',
+		'SetOverwrite',
+		'WindowIcon',
+		'XPStyle',
+		'LicenseForceSelection',
+	],
+	[
+		['on', 'on'],
+		['off', 'off'],
+	],
+);
 
 // --- FileOpen modes ---
 
-register(['FileOpen'], [
-	['r', 'r'],
-	['w', 'w'],
-	['a', 'a'],
-]);
+register(
+	['FileOpen'],
+	[
+		['r', 'r'],
+		['w', 'w'],
+		['a', 'a'],
+	],
+);
 
 // --- Compression algorithms ---
 
-register(['SetCompressor'], [
-	['zlib', 'zlib'],
-	['bzip2', 'bzip2'],
-	['lzma', 'lzma'],
-]);
+register(
+	['SetCompressor'],
+	[
+		['zlib', 'zlib'],
+		['bzip2', 'bzip2'],
+		['lzma', 'lzma'],
+	],
+);
 
 // --- CPU targets ---
 
-register(['Target'], [
-	['x86', 'x86'],
-	['amd64', 'amd64'],
-]);
+register(
+	['Target'],
+	[
+		['x86', 'x86'],
+		['amd64', 'amd64'],
+	],
+);
 
 // --- SetOverwrite modes ---
 
-register(['SetOverwrite'], [
-	['try', 'try'],
-	['ifnewer', 'ifnewer'],
-	['ifdiff', 'ifdiff'],
-	['lastused', 'lastused'],
-]);
+register(
+	['SetOverwrite'],
+	[
+		['try', 'try'],
+		['ifnewer', 'ifnewer'],
+		['ifdiff', 'ifdiff'],
+		['lastused', 'lastused'],
+	],
+);
 
 // --- SetCompress modes ---
 
-register(['SetCompress'], [
-	['auto', 'auto'],
-	['force', 'force'],
-]);
+register(
+	['SetCompress'],
+	[
+		['auto', 'auto'],
+		['force', 'force'],
+	],
+);
 
 // --- SilentInstall / SilentUnInstall / SetSilent ---
 
-register(['SilentInstall'], [
-	['normal', 'normal'],
-	['silent', 'silent'],
-	['silentlog', 'silentlog'],
-]);
+register(
+	['SilentInstall'],
+	[
+		['normal', 'normal'],
+		['silent', 'silent'],
+		['silentlog', 'silentlog'],
+	],
+);
 
-register(['SilentUnInstall', 'SetSilent'], [
-	['normal', 'normal'],
-	['silent', 'silent'],
-]);
+register(
+	['SilentUnInstall', 'SetSilent'],
+	[
+		['normal', 'normal'],
+		['silent', 'silent'],
+	],
+);
 
 // --- ShowInstDetails / ShowUninstDetails ---
 
-register(['ShowInstDetails', 'ShowUninstDetails'], [
-	['hide', 'hide'],
-	['show', 'show'],
-	['nevershow', 'nevershow'],
-]);
+register(
+	['ShowInstDetails', 'ShowUninstDetails'],
+	[
+		['hide', 'hide'],
+		['show', 'show'],
+		['nevershow', 'nevershow'],
+	],
+);
 
 // --- SetDetailsView / DirShow ---
 
-register(['SetDetailsView', 'DirShow'], [
-	['show', 'show'],
-	['hide', 'hide'],
-]);
+register(
+	['SetDetailsView', 'DirShow'],
+	[
+		['show', 'show'],
+		['hide', 'hide'],
+	],
+);
 
 // --- SetDetailsPrint ---
 
-register(['SetDetailsPrint'], [
-	['listonly', 'listonly'],
-	['textonly', 'textonly'],
-	['both', 'both'],
-	['none', 'none'],
-	['lastused', 'lastused'],
-]);
+register(
+	['SetDetailsPrint'],
+	[
+		['listonly', 'listonly'],
+		['textonly', 'textonly'],
+		['both', 'both'],
+		['none', 'none'],
+		['lastused', 'lastused'],
+	],
+);
 
 // --- RequestExecutionLevel ---
 
-register(['RequestExecutionLevel'], [
-	['none', 'none'],
-	['user', 'user'],
-	['highest', 'highest'],
-	['admin', 'admin'],
-]);
+register(
+	['RequestExecutionLevel'],
+	[
+		['none', 'none'],
+		['user', 'user'],
+		['highest', 'highest'],
+		['admin', 'admin'],
+	],
+);
 
 // --- AddBrandingImage ---
 
-register(['AddBrandingImage'], [
-	['top', 'top'],
-	['left', 'left'],
-	['bottom', 'bottom'],
-	['right', 'right'],
-]);
+register(
+	['AddBrandingImage'],
+	[
+		['top', 'top'],
+		['left', 'left'],
+		['bottom', 'bottom'],
+		['right', 'right'],
+	],
+);
 
 // --- InstProgressFlags ---
 
-register(['InstProgressFlags'], [
-	['smooth', 'smooth'],
-	['colored', 'colored'],
-]);
+register(
+	['InstProgressFlags'],
+	[
+		['smooth', 'smooth'],
+		['colored', 'colored'],
+	],
+);
 
 // --- LicenseForceSelection ---
 
-register(['LicenseForceSelection'], [
-	['checkbox', 'checkbox'],
-	['radiobuttons', 'radiobuttons'],
-]);
+register(
+	['LicenseForceSelection'],
+	[
+		['checkbox', 'checkbox'],
+		['radiobuttons', 'radiobuttons'],
+	],
+);
 
 // --- SetShellVarContext ---
 
-register(['SetShellVarContext'], [
-	['all', 'all'],
-	['current', 'current'],
-]);
+register(
+	['SetShellVarContext'],
+	[
+		['all', 'all'],
+		['current', 'current'],
+	],
+);
 
 // --- DirVerify ---
 
-register(['DirVerify'], [
-	['auto', 'auto'],
-	['leave', 'leave'],
-]);
+register(
+	['DirVerify'],
+	[
+		['auto', 'auto'],
+		['leave', 'leave'],
+	],
+);
 
 // --- ExecShell / ExecShellWait ---
 
-register(['ExecShell', 'ExecShellWait'], [
-	['open', 'open'],
-	['print', 'print'],
-]);
+register(
+	['ExecShell', 'ExecShellWait'],
+	[
+		['open', 'open'],
+		['print', 'print'],
+	],
+);
 
 // --- Page / UninstPage ---
 
-register(['Page', 'UninstPage'], [
-	['custom', 'custom'],
-	['license', 'license'],
-	['components', 'components'],
-	['directory', 'directory'],
-	['instfiles', 'instfiles'],
-	['uninstconfirm', 'uninstConfirm'],
-]);
+register(
+	['Page', 'UninstPage'],
+	[
+		['custom', 'custom'],
+		['license', 'license'],
+		['components', 'components'],
+		['directory', 'directory'],
+		['instfiles', 'instfiles'],
+		['uninstconfirm', 'uninstConfirm'],
+	],
+);
 
 // --- SetCtlColors ---
 
-register(['SetCtlColors'], [
-	['transparent', 'transparent'],
-]);
+register(['SetCtlColors'], [['transparent', 'transparent']]);
 
 // --- LockWindow ---
 
-register(['LockWindow'], [
-	['on', 'on'],
-	['off', 'off'],
-]);
+register(
+	['LockWindow'],
+	[
+		['on', 'on'],
+		['off', 'off'],
+	],
+);
 
 // --- SetRegView ---
 
-register(['SetRegView'], [
-	['default', 'default'],
-]);
+register(['SetRegView'], [['default', 'default']]);
 
 // --- Registry root keys ---
 
-register([
-	'DeleteRegKey', 'DeleteRegValue', 'EnumRegKey', 'EnumRegValue',
-	'InstallDirRegKey', 'ReadRegDWORD', 'ReadRegStr',
-	'WriteRegBin', 'WriteRegDWORD', 'WriteRegExpandStr',
-	'WriteRegMultiStr', 'WriteRegNone', 'WriteRegStr',
-], [
-	['hkcr', 'HKCR'],
-	['hkcr32', 'HKCR32'],
-	['hkcr64', 'HKCR64'],
-	['hklm', 'HKLM'],
-	['hklm32', 'HKLM32'],
-	['hklm64', 'HKLM64'],
-	['hkcu', 'HKCU'],
-	['hkcu32', 'HKCU32'],
-	['hkcu64', 'HKCU64'],
-	['hku', 'HKU'],
-	['hkcc', 'HKCC'],
-	['hkdd', 'HKDD'],
-	['hkpd', 'HKPD'],
-	['shctx', 'SHCTX'],
-]);
+register(
+	[
+		'DeleteRegKey',
+		'DeleteRegValue',
+		'EnumRegKey',
+		'EnumRegValue',
+		'InstallDirRegKey',
+		'ReadRegDWORD',
+		'ReadRegStr',
+		'WriteRegBin',
+		'WriteRegDWORD',
+		'WriteRegExpandStr',
+		'WriteRegMultiStr',
+		'WriteRegNone',
+		'WriteRegStr',
+	],
+	[
+		['hkcr', 'HKCR'],
+		['hkcr32', 'HKCR32'],
+		['hkcr64', 'HKCR64'],
+		['hklm', 'HKLM'],
+		['hklm32', 'HKLM32'],
+		['hklm64', 'HKLM64'],
+		['hkcu', 'HKCU'],
+		['hkcu32', 'HKCU32'],
+		['hkcu64', 'HKCU64'],
+		['hku', 'HKU'],
+		['hkcc', 'HKCC'],
+		['hkdd', 'HKDD'],
+		['hkpd', 'HKPD'],
+		['shctx', 'SHCTX'],
+	],
+);
 
 // --- MessageBox flags and return values ---
 
-register(['MessageBox'], [
-	['mb_ok', 'MB_OK'],
-	['mb_okcancel', 'MB_OKCANCEL'],
-	['mb_abortretryignore', 'MB_ABORTRETRYIGNORE'],
-	['mb_retrycancel', 'MB_RETRYCANCEL'],
-	['mb_yesno', 'MB_YESNO'],
-	['mb_yesnocancel', 'MB_YESNOCANCEL'],
-	['mb_iconexclamation', 'MB_ICONEXCLAMATION'],
-	['mb_iconinformation', 'MB_ICONINFORMATION'],
-	['mb_iconquestion', 'MB_ICONQUESTION'],
-	['mb_iconstop', 'MB_ICONSTOP'],
-	['mb_usericon', 'MB_USERICON'],
-	['mb_topmost', 'MB_TOPMOST'],
-	['mb_setforeground', 'MB_SETFOREGROUND'],
-	['mb_right', 'MB_RIGHT'],
-	['mb_defbutton1', 'MB_DEFBUTTON1'],
-	['mb_defbutton2', 'MB_DEFBUTTON2'],
-	['mb_defbutton3', 'MB_DEFBUTTON3'],
-	['mb_defbutton4', 'MB_DEFBUTTON4'],
-	['idok', 'IDOK'],
-	['idcancel', 'IDCANCEL'],
-	['idyes', 'IDYES'],
-	['idno', 'IDNO'],
-	['idabort', 'IDABORT'],
-	['idretry', 'IDRETRY'],
-	['idignore', 'IDIGNORE'],
-]);
+register(
+	['MessageBox'],
+	[
+		['mb_ok', 'MB_OK'],
+		['mb_okcancel', 'MB_OKCANCEL'],
+		['mb_abortretryignore', 'MB_ABORTRETRYIGNORE'],
+		['mb_retrycancel', 'MB_RETRYCANCEL'],
+		['mb_yesno', 'MB_YESNO'],
+		['mb_yesnocancel', 'MB_YESNOCANCEL'],
+		['mb_iconexclamation', 'MB_ICONEXCLAMATION'],
+		['mb_iconinformation', 'MB_ICONINFORMATION'],
+		['mb_iconquestion', 'MB_ICONQUESTION'],
+		['mb_iconstop', 'MB_ICONSTOP'],
+		['mb_usericon', 'MB_USERICON'],
+		['mb_topmost', 'MB_TOPMOST'],
+		['mb_setforeground', 'MB_SETFOREGROUND'],
+		['mb_right', 'MB_RIGHT'],
+		['mb_defbutton1', 'MB_DEFBUTTON1'],
+		['mb_defbutton2', 'MB_DEFBUTTON2'],
+		['mb_defbutton3', 'MB_DEFBUTTON3'],
+		['mb_defbutton4', 'MB_DEFBUTTON4'],
+		['idok', 'IDOK'],
+		['idcancel', 'IDCANCEL'],
+		['idyes', 'IDYES'],
+		['idno', 'IDNO'],
+		['idabort', 'IDABORT'],
+		['idretry', 'IDRETRY'],
+		['idignore', 'IDIGNORE'],
+	],
+);
 
 // --- ShowWindow constants ---
 
-register(['CreateShortcut', 'ShowWindow'], [
-	['sw_shownormal', 'SW_SHOWNORMAL'],
-	['sw_showmaximized', 'SW_SHOWMAXIMIZED'],
-	['sw_showminimized', 'SW_SHOWMINIMIZED'],
-	['sw_hide', 'SW_HIDE'],
-	['sw_show', 'SW_SHOW'],
-]);
+register(
+	['CreateShortcut', 'ShowWindow'],
+	[
+		['sw_shownormal', 'SW_SHOWNORMAL'],
+		['sw_showmaximized', 'SW_SHOWMAXIMIZED'],
+		['sw_showminimized', 'SW_SHOWMINIMIZED'],
+		['sw_hide', 'SW_HIDE'],
+		['sw_show', 'SW_SHOW'],
+	],
+);
 
 // --- Hotkey modifiers (used in CreateShortcut) ---
 
-register(['CreateShortcut'], [
-	['alt', 'ALT'],
-	['control', 'CONTROL'],
-	['ext', 'EXT'],
-	['shift', 'SHIFT'],
-]);
+register(
+	['CreateShortcut'],
+	[
+		['alt', 'ALT'],
+		['control', 'CONTROL'],
+		['ext', 'EXT'],
+		['shift', 'SHIFT'],
+	],
+);
 
 // --- File attributes ---
 
-register(['SetFileAttributes'], [
-	['archive', 'ARCHIVE'],
-	['hidden', 'HIDDEN'],
-	['offline', 'OFFLINE'],
-	['readonly', 'READONLY'],
-	['system', 'SYSTEM'],
-	['temporary', 'TEMPORARY'],
-]);
+register(
+	['SetFileAttributes'],
+	[
+		['archive', 'ARCHIVE'],
+		['hidden', 'HIDDEN'],
+		['offline', 'OFFLINE'],
+		['readonly', 'READONLY'],
+		['system', 'SYSTEM'],
+		['temporary', 'TEMPORARY'],
+	],
+);
 
 // --- FileSeek modes ---
 
-register(['FileSeek'], [
-	['set', 'SET'],
-	['cur', 'CUR'],
-	['end', 'END'],
-]);
+register(
+	['FileSeek'],
+	[
+		['set', 'SET'],
+		['cur', 'CUR'],
+		['end', 'END'],
+	],
+);
 
 // --- GetWinVer fields ---
 
-register(['GetWinVer'], [
-	['major', 'MAJOR'],
-	['minor', 'MINOR'],
-	['build', 'BUILD'],
-	['servicepack', 'SERVICEPACK'],
-]);
+register(
+	['GetWinVer'],
+	[
+		['major', 'MAJOR'],
+		['minor', 'MINOR'],
+		['build', 'BUILD'],
+		['servicepack', 'SERVICEPACK'],
+	],
+);
 
 // --- ManifestSupportedOS values ---
 
-register(['ManifestSupportedOS'], [
-	['winvista', 'WinVista'],
-	['win7', 'Win7'],
-	['win8', 'Win8'],
-	['win8.1', 'Win8.1'],
-	['win10', 'Win10'],
-]);
+register(
+	['ManifestSupportedOS'],
+	[
+		['winvista', 'WinVista'],
+		['win7', 'Win7'],
+		['win8', 'Win8'],
+		['win8.1', 'Win8.1'],
+		['win10', 'Win10'],
+	],
+);
 
 // --- ChangeUI dialog identifiers ---
 
-register(['ChangeUI'], [
-	['dlg_id', 'dlg_id'],
-]);
+register(['ChangeUI'], [['dlg_id', 'dlg_id']]);
 
 /**
  * Instruction-scoped parameter map.

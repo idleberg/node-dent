@@ -259,7 +259,10 @@ function tokenizeArithmetic(arg: string): string[] {
 		if (i + 1 < arg.length) {
 			const two = arg.slice(i, i + 2);
 			if (ARITHMETIC_OPS.has(two)) {
-				if (current) { result.push(current); current = ''; }
+				if (current) {
+					result.push(current);
+					current = '';
+				}
 				result.push(two);
 				lastWasOp = true;
 				i += 2;
@@ -276,7 +279,10 @@ function tokenizeArithmetic(arg: string): string[] {
 				i++;
 				continue;
 			}
-			if (current) { result.push(current); current = ''; }
+			if (current) {
+				result.push(current);
+				current = '';
+			}
 			result.push(ch);
 			lastWasOp = true;
 			i++;
@@ -316,13 +322,9 @@ function printInstruction(node: InstructionNode, level: number, options: Printer
 	const kwLower = node.keyword.toLowerCase();
 	const keyword = canonicalCasing.get(kwLower) ?? node.keyword;
 	const instrParams = instructionParameters.get(kwLower);
-	const splitArgs = arithmeticInstructions.has(kwLower)
-		? splitArithmeticTokens(node.args)
-		: splitPipeTokens(node.args);
+	const splitArgs = arithmeticInstructions.has(kwLower) ? splitArithmeticTokens(node.args) : splitPipeTokens(node.args);
 	const args = splitArgs.map((arg) => normalizeArg(arg, instrParams));
-	const joined = arithmeticInstructions.has(kwLower)
-		? args.join(' ')
-		: joinWithCompactPipes(args);
+	const joined = arithmeticInstructions.has(kwLower) ? args.join(' ') : joinWithCompactPipes(args);
 	const parts = args.length > 0 ? `${keyword} ${joined}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 
