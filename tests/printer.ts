@@ -215,24 +215,6 @@ test('MessageBox return value is normalised to uppercase', () => {
 	assert.is(result, 'MessageBox MB_YESNO "Sure?" IDYES done\n');
 });
 
-test('Spaced pipe flags are collapsed to compact form', () => {
-	const format = createFormatter();
-	const result = format('MessageBox MB_YESNO | MB_DEFBUTTON2 "Sure?"\n');
-	assert.is(result, 'MessageBox MB_YESNO|MB_DEFBUTTON2 "Sure?"\n');
-});
-
-test('Spaced pipe flags with wrong casing are normalised and collapsed', () => {
-	const format = createFormatter();
-	const result = format('MessageBox mb_ok | mb_iconexclamation "Hello"\n');
-	assert.is(result, 'MessageBox MB_OK|MB_ICONEXCLAMATION "Hello"\n');
-});
-
-test('Multiple spaced pipe flags are all collapsed', () => {
-	const format = createFormatter();
-	const result = format('MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
-	assert.is(result, 'MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "Sure?"\n');
-});
-
 // --- Block comments ---
 
 test('Single-line block comment is preserved', () => {

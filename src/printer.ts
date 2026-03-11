@@ -154,33 +154,9 @@ function normalizeArg(arg: string): string {
 	return arg;
 }
 
-/**
- * Collapses spaced pipe sequences (`FLAG | FLAG`) into the compact
- * NSIS-idiomatic form (`FLAG|FLAG`).
- *
- * Works by absorbing bare `|` tokens and their neighbours into a single token.
- */
-function collapsePipeFlags(args: string[]): string[] {
-	return args.reduce<string[]>((result, arg) => {
-		const last = result[result.length - 1];
-
-		if (arg === '|' && result.length > 0) {
-			// Absorb the pipe onto the previous token
-			result[result.length - 1] = `${last}|`;
-		} else if (last?.endsWith('|')) {
-			// Previous token absorbed a pipe — append this token to it
-			result[result.length - 1] = `${last}${arg}`;
-		} else {
-			result.push(arg);
-		}
-
-		return result;
-	}, []);
-}
-
 function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
 	const keyword = canonicalCasing.get(node.keyword.toLowerCase()) ?? node.keyword;
-	const args = collapsePipeFlags(node.args.map(normalizeArg));
+	const args = node.args.map(normalizeArg);
 	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 
