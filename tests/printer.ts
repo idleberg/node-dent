@@ -161,10 +161,10 @@ test('MessageBox flags are normalised to uppercase', () => {
 	assert.is(result, 'MessageBox MB_YESNO "Sure?"\n');
 });
 
-test('Pipe-separated MessageBox flags are normalised and spaced', () => {
+test('Pipe-separated MessageBox flags are normalised and kept compact', () => {
 	const format = createFormatter();
 	const result = format('MessageBox mb_ok|mb_iconexclamation "Hello"\n');
-	assert.is(result, 'MessageBox MB_OK | MB_ICONEXCLAMATION "Hello"\n');
+	assert.is(result, 'MessageBox MB_OK|MB_ICONEXCLAMATION "Hello"\n');
 });
 
 test('Boolean parameter is normalised to lowercase', () => {
@@ -217,10 +217,10 @@ test('MessageBox return value is normalised to uppercase', () => {
 
 // --- Instruction-scoped parameter normalization ---
 
-test('Compiler directive pipe is spaced but args are not normalised', () => {
+test('Compiler directive pipe stays compact and args are not normalised', () => {
 	const format = createFormatter();
 	const result = format('!if A|B\n');
-	assert.is(result, '!if A | B\n');
+	assert.is(result, '!if A|B\n');
 });
 
 test('Compiler directive does not lowercase single-letter args', () => {
@@ -267,48 +267,48 @@ test('Slash flags are normalised globally regardless of instruction', () => {
 	assert.is(format('Delete /rebootok "file.exe"\n'), 'Delete /REBOOTOK "file.exe"\n');
 });
 
-// --- Pipe whitespace normalization ---
+// --- Pipe normalization (compact) ---
 
-test('Compact pipe flags are expanded to spaced form', () => {
+test('Compact pipe flags stay compact', () => {
 	const format = createFormatter();
 	const result = format('MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "Sure?"\n');
-	assert.is(result, 'MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
+	assert.is(result, 'MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "Sure?"\n');
 });
 
-test('Already-spaced pipe flags remain spaced', () => {
+test('Spaced pipe flags are collapsed to compact form', () => {
 	const format = createFormatter();
 	const result = format('MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
-	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+	assert.is(result, 'MessageBox MB_OK|MB_DEFBUTTON1 "text"\n');
 });
 
-test('Spaced pipe flags with wrong casing are normalised', () => {
+test('Spaced pipe flags with wrong casing are normalised and collapsed', () => {
 	const format = createFormatter();
 	const result = format('MessageBox mb_ok | mb_iconexclamation "Hello"\n');
-	assert.is(result, 'MessageBox MB_OK | MB_ICONEXCLAMATION "Hello"\n');
+	assert.is(result, 'MessageBox MB_OK|MB_ICONEXCLAMATION "Hello"\n');
 });
 
-test('Multiple spaced pipe flags are normalised', () => {
+test('Multiple spaced pipe flags are collapsed', () => {
 	const format = createFormatter();
 	const result = format('MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
-	assert.is(result, 'MessageBox MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 "Sure?"\n');
+	assert.is(result, 'MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "Sure?"\n');
 });
 
-test('Compiler directive spaced pipe is preserved', () => {
+test('Compiler directive spaced pipe is collapsed', () => {
 	const format = createFormatter();
 	const result = format('!if A | B\n');
-	assert.is(result, '!if A | B\n');
+	assert.is(result, '!if A|B\n');
 });
 
-test('Asymmetric pipe spacing is normalised (pipe attached to right)', () => {
+test('Asymmetric pipe spacing is normalised to compact (pipe attached to right)', () => {
 	const format = createFormatter();
 	const result = format('MessageBox MB_OK |MB_DEFBUTTON1 "text"\n');
-	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+	assert.is(result, 'MessageBox MB_OK|MB_DEFBUTTON1 "text"\n');
 });
 
-test('Asymmetric pipe spacing is normalised (pipe attached to left)', () => {
+test('Asymmetric pipe spacing is normalised to compact (pipe attached to left)', () => {
 	const format = createFormatter();
 	const result = format('MessageBox MB_OK| MB_DEFBUTTON1 "text"\n');
-	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+	assert.is(result, 'MessageBox MB_OK|MB_DEFBUTTON1 "text"\n');
 });
 
 // --- IntOp / IntPtrOp operator splitting ---

@@ -292,6 +292,26 @@ function tokenizeArithmetic(arg: string): string[] {
 	return result.length > 0 ? result : [arg];
 }
 
+/**
+ * Joins args so that `|` tokens are compact (no surrounding spaces).
+ * `['MB_OK', '|', 'MB_DEFBUTTON1', '"Hello"']` → `'MB_OK|MB_DEFBUTTON1 "Hello"'`
+ */
+function joinWithCompactPipes(args: string[]): string {
+	let result = '';
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i] as string;
+		if (arg === '|') {
+			result += '|';
+		} else if (i > 0 && args[i - 1] === '|') {
+			result += arg;
+		} else {
+			if (result) result += ' ';
+			result += arg;
+		}
+	}
+	return result;
+}
+
 function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
 	const kwLower = node.keyword.toLowerCase();
 	const keyword = canonicalCasing.get(kwLower) ?? node.keyword;
@@ -300,7 +320,10 @@ function printInstruction(node: InstructionNode, level: number, options: Printer
 		? splitArithmeticTokens(node.args)
 		: splitPipeTokens(node.args);
 	const args = splitArgs.map((arg) => normalizeArg(arg, instrParams));
-	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
+	const joined = arithmeticInstructions.has(kwLower)
+		? args.join(' ')
+		: joinWithCompactPipes(args);
+	const parts = args.length > 0 ? `${keyword} ${joined}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 
 	if (node.comment) {
