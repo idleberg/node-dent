@@ -152,32 +152,154 @@ function normalizeArg(arg: string, instrParams: ReadonlyMap<string, string> | un
  * - `MB_OK|MB_DEFBUTTON1` → `['MB_OK', '|', 'MB_DEFBUTTON1']`
  * - `|MB_DEFBUTTON1`      → `['|', 'MB_DEFBUTTON1']`
  * - `MB_OK|`              → `['MB_OK', '|']`
+ * - `$1|$2`               → `['$1', '|', '$2']`
  *
- * Quoted strings and variables are never split.
+ * Quoted strings are never split. `${…}` groups within tokens are preserved.
  */
 function splitPipeTokens(args: string[]): string[] {
 	return args.flatMap((arg) => {
-		if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`') || arg.startsWith('$')) {
+		if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`')) {
 			return [arg];
 		}
 		if (!arg.includes('|') || arg === '|') {
 			return [arg];
 		}
-		const parts = arg.split('|');
-		const result: string[] = [];
-		for (let i = 0; i < parts.length; i++) {
-			if (parts[i] !== '') result.push(parts[i] as string);
-			if (i < parts.length - 1) result.push('|');
-		}
-		return result;
+		return splitPreservingGroups(arg, '|');
 	});
+}
+
+/**
+ * Splits a bare token on a single separator character, preserving `${…}`
+ * groups (the separator inside braces is not treated as a split point).
+ */
+function splitPreservingGroups(arg: string, sep: string): string[] {
+	const result: string[] = [];
+	let current = '';
+	let i = 0;
+
+	while (i < arg.length) {
+		// Preserve ${…} groups
+		if (arg[i] === '$' && arg[i + 1] === '{') {
+			const end = arg.indexOf('}', i + 2);
+			if (end !== -1) {
+				current += arg.slice(i, end + 1);
+				i = end + 1;
+				continue;
+			}
+		}
+
+		if (arg[i] === sep) {
+			if (current) result.push(current);
+			current = '';
+			result.push(sep);
+			i++;
+			continue;
+		}
+
+		current += arg[i];
+		i++;
+	}
+
+	if (current) result.push(current);
+	return result;
+}
+
+/**
+ * Instructions whose arguments may contain arithmetic/bitwise operators
+ * that should be split into separate tokens.
+ */
+const arithmeticInstructions = new Set(['intop', 'intptrop']);
+
+/**
+ * Splits bare tokens on arithmetic/bitwise operators for IntOp/IntPtrOp.
+ * Handles both single-char (`+`, `-`, `*`, `/`, `%`, `&`, `^`, `~`, `!`)
+ * and multi-char (`||`, `&&`, `<<`, `>>`) operators.
+ *
+ * Special handling for `-`: treated as unary (stays attached to the next
+ * token) when it follows another operator or appears at the start.
+ * - `$1+$2`   → `['$1', '+', '$2']`
+ * - `$1+-$2`  → `['$1', '+', '-$2']`
+ * - `$1-$2`   → `['$1', '-', '$2']`
+ */
+function splitArithmeticTokens(args: string[]): string[] {
+	return args.flatMap((arg) => {
+		if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`')) {
+			return [arg];
+		}
+		// Already a standalone operator — pass through
+		if (ARITHMETIC_OPS.has(arg)) {
+			return [arg];
+		}
+		return tokenizeArithmetic(arg);
+	});
+}
+
+const ARITHMETIC_OPS = new Set(['||', '&&', '<<', '>>', '+', '-', '*', '/', '%', '|', '&', '^', '~', '!']);
+const SINGLE_CHAR_OPS = new Set(['+', '-', '*', '/', '%', '|', '&', '^', '~', '!']);
+
+function tokenizeArithmetic(arg: string): string[] {
+	const result: string[] = [];
+	let current = '';
+	let lastWasOp = true; // start counts as "after operator" for unary detection
+	let i = 0;
+
+	while (i < arg.length) {
+		// Preserve ${…} groups
+		if (arg[i] === '$' && arg[i + 1] === '{') {
+			const end = arg.indexOf('}', i + 2);
+			if (end !== -1) {
+				current += arg.slice(i, end + 1);
+				i = end + 1;
+				lastWasOp = false;
+				continue;
+			}
+		}
+
+		// Check two-char operators first
+		if (i + 1 < arg.length) {
+			const two = arg.slice(i, i + 2);
+			if (ARITHMETIC_OPS.has(two)) {
+				if (current) { result.push(current); current = ''; }
+				result.push(two);
+				lastWasOp = true;
+				i += 2;
+				continue;
+			}
+		}
+
+		// Check single-char operators
+		const ch = arg[i] as string;
+		if (SINGLE_CHAR_OPS.has(ch)) {
+			// `-` after another operator (or at start) is unary — keep attached
+			if (ch === '-' && lastWasOp) {
+				current += ch;
+				i++;
+				continue;
+			}
+			if (current) { result.push(current); current = ''; }
+			result.push(ch);
+			lastWasOp = true;
+			i++;
+			continue;
+		}
+
+		current += ch;
+		lastWasOp = false;
+		i++;
+	}
+
+	if (current) result.push(current);
+	return result.length > 0 ? result : [arg];
 }
 
 function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
 	const kwLower = node.keyword.toLowerCase();
 	const keyword = canonicalCasing.get(kwLower) ?? node.keyword;
 	const instrParams = instructionParameters.get(kwLower);
-	const args = splitPipeTokens(node.args).map((arg) => normalizeArg(arg, instrParams));
+	const splitArgs = arithmeticInstructions.has(kwLower)
+		? splitArithmeticTokens(node.args)
+		: splitPipeTokens(node.args);
+	const args = splitArgs.map((arg) => normalizeArg(arg, instrParams));
 	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 

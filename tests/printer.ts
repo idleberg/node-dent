@@ -311,6 +311,98 @@ test('Asymmetric pipe spacing is normalised (pipe attached to left)', () => {
 	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
 });
 
+// --- IntOp / IntPtrOp operator splitting ---
+
+test('IntOp compact addition is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1+$2\n'), 'IntOp $0 $1 + $2\n');
+});
+
+test('IntOp compact subtraction is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1-$2\n'), 'IntOp $0 $1 - $2\n');
+});
+
+test('IntOp unary minus after operator stays attached', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1+-$2\n'), 'IntOp $0 $1 + -$2\n');
+});
+
+test('IntOp compact multiplication is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1*$2\n'), 'IntOp $0 $1 * $2\n');
+});
+
+test('IntOp compact division is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1/$2\n'), 'IntOp $0 $1 / $2\n');
+});
+
+test('IntOp compact modulo is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1%$2\n'), 'IntOp $0 $1 % $2\n');
+});
+
+test('IntOp compact bitwise OR is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1|$2\n'), 'IntOp $0 $1 | $2\n');
+});
+
+test('IntOp compact bitwise AND is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1&$2\n'), 'IntOp $0 $1 & $2\n');
+});
+
+test('IntOp compact XOR is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1^$2\n'), 'IntOp $0 $1 ^ $2\n');
+});
+
+test('IntOp compact logical OR is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1||$2\n'), 'IntOp $0 $1 || $2\n');
+});
+
+test('IntOp compact logical AND is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1&&$2\n'), 'IntOp $0 $1 && $2\n');
+});
+
+test('IntOp compact shift left is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1<<$2\n'), 'IntOp $0 $1 << $2\n');
+});
+
+test('IntOp compact shift right is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1>>$2\n'), 'IntOp $0 $1 >> $2\n');
+});
+
+test('IntOp unary bitwise NOT is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 ~$1\n'), 'IntOp $0 ~ $1\n');
+});
+
+test('IntOp unary logical NOT is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 !$1\n'), 'IntOp $0 ! $1\n');
+});
+
+test('IntOp already-spaced operators are preserved', () => {
+	const format = createFormatter();
+	assert.is(format('IntOp $0 $1 + $2\n'), 'IntOp $0 $1 + $2\n');
+});
+
+test('IntPtrOp compact operator with ${} variable is spaced', () => {
+	const format = createFormatter();
+	assert.is(format('IntPtrOp $0 $0+${NSIS_MAX_STRLEN}\n'), 'IntPtrOp $0 $0 + ${NSIS_MAX_STRLEN}\n');
+});
+
+test('Non-IntOp instruction does not split operators', () => {
+	const format = createFormatter();
+	assert.is(format('StrCpy $0 $1+$2\n'), 'StrCpy $0 $1+$2\n');
+});
+
 // --- Block comments ---
 
 test('Single-line block comment is preserved', () => {
