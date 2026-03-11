@@ -133,15 +133,6 @@ function normalizeArg(arg: string, instrParams: ReadonlyMap<string, string> | un
 	const exact = instrParams?.get(lower) ?? globalParameters.get(lower);
 	if (exact !== undefined) return exact;
 
-	// Pipe-separated compound flags (e.g. MB_OK|MB_ICONEXCLAMATION → MB_OK | MB_ICONEXCLAMATION)
-	// Skip standalone `|` tokens — those are already space-separated by the parser.
-	if (arg.includes('|') && arg !== '|') {
-		return arg
-			.split('|')
-			.map((part) => normalizeArg(part, instrParams))
-			.join(' | ');
-	}
-
 	// Parameterised prefix (e.g. /LANG=1033, /CHARSET=UTF8)
 	const eqIdx = arg.indexOf('=');
 	if (eqIdx > 0) {
@@ -155,11 +146,38 @@ function normalizeArg(arg: string, instrParams: ReadonlyMap<string, string> | un
 	return arg;
 }
 
+/**
+ * Splits bare tokens that contain pipes into separate tokens with `|` as
+ * a standalone separator. Handles all spacing variants:
+ * - `MB_OK|MB_DEFBUTTON1` → `['MB_OK', '|', 'MB_DEFBUTTON1']`
+ * - `|MB_DEFBUTTON1`      → `['|', 'MB_DEFBUTTON1']`
+ * - `MB_OK|`              → `['MB_OK', '|']`
+ *
+ * Quoted strings and variables are never split.
+ */
+function splitPipeTokens(args: string[]): string[] {
+	return args.flatMap((arg) => {
+		if (arg.startsWith('"') || arg.startsWith("'") || arg.startsWith('`') || arg.startsWith('$')) {
+			return [arg];
+		}
+		if (!arg.includes('|') || arg === '|') {
+			return [arg];
+		}
+		const parts = arg.split('|');
+		const result: string[] = [];
+		for (let i = 0; i < parts.length; i++) {
+			if (parts[i] !== '') result.push(parts[i] as string);
+			if (i < parts.length - 1) result.push('|');
+		}
+		return result;
+	});
+}
+
 function printInstruction(node: InstructionNode, level: number, options: PrinterOptions): string {
 	const kwLower = node.keyword.toLowerCase();
 	const keyword = canonicalCasing.get(kwLower) ?? node.keyword;
 	const instrParams = instructionParameters.get(kwLower);
-	const args = node.args.map((arg) => normalizeArg(arg, instrParams));
+	const args = splitPipeTokens(node.args).map((arg) => normalizeArg(arg, instrParams));
 	const parts = args.length > 0 ? `${keyword} ${args.join(' ')}` : keyword;
 	let line = `${indentStr(level, options)}${parts}`;
 

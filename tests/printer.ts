@@ -299,6 +299,18 @@ test('Compiler directive spaced pipe is preserved', () => {
 	assert.is(result, '!if A | B\n');
 });
 
+test('Asymmetric pipe spacing is normalised (pipe attached to right)', () => {
+	const format = createFormatter();
+	const result = format('MessageBox MB_OK |MB_DEFBUTTON1 "text"\n');
+	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+});
+
+test('Asymmetric pipe spacing is normalised (pipe attached to left)', () => {
+	const format = createFormatter();
+	const result = format('MessageBox MB_OK| MB_DEFBUTTON1 "text"\n');
+	assert.is(result, 'MessageBox MB_OK | MB_DEFBUTTON1 "text"\n');
+});
+
 // --- Block comments ---
 
 test('Single-line block comment is preserved', () => {
