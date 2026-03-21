@@ -25,8 +25,19 @@ format(`
 	Name "Demo"
 	Section
 	Nop
-	Section
+	SectionEnd
 `);
+```
+
+Output of the script above:
+
+```nsis
+// # Look ma, no indentation
+ Name "Demo"
+ 
+ Section
+	Nop
+SectionEnd
 ```
 
 ### Options
