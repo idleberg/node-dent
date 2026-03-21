@@ -32,10 +32,10 @@ format(`
 Output of the script above:
 
 ```nsis
-// # Look ma, no indentation
- Name "Demo"
+# Look ma, no indentation
+Name "Demo"
  
- Section
+Section
 	Nop
 SectionEnd
 ```
