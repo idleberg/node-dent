@@ -29,6 +29,20 @@ const html = await highlight(
 );
 ```
 
+The parser and its highlight queries ship in [`@nsis/lumis-wasm`](../lumis-wasm#readme), which is installed as a dependency. Lumis loads it from `node_modules`, falling back to jsDelivr. To serve it from your own bundle instead — in a browser, say — point Lumis at your copies:
+
+```typescript
+import { configureLanguagePackageResolver, configureWasmResolver } from "@lumis-sh/lumis";
+import manifestUrl from "@nsis/lumis-wasm/lumis.json?url";
+import parserUrl from "@nsis/lumis-wasm/tree-sitter-nsis.wasm?url";
+
+configureLanguagePackageResolver(() => manifestUrl);
+configureWasmResolver(() => parserUrl);
+```
+
+> [!NOTE]
+> Requires Lumis v0.7 or later. Earlier versions took the highlight queries inline on the language object, which v0.7 rejects.
+
 ## License
 
 Released under [The MIT License](LICENSE).

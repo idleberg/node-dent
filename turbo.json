@@ -8,6 +8,11 @@
 			"outputs": ["bin/**", "dist/**", "lib/**"],
 			"env": ["GITHUB_PAGES"]
 		},
+		"@nsis/lumis-wasm#build": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$"],
+			"outputs": ["index.d.ts", "index.js", "lumis.json", "*.wasm"]
+		},
 		"@nsis/parser#build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],

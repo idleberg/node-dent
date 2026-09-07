@@ -57,12 +57,13 @@
 		"access": "public"
 	},
 	"peerDependencies": {
-		"@lumis-sh/lumis": ">=0.1.0"
+		"@lumis-sh/lumis": ">=0.7.0"
+	},
+	"dependencies": {
+		"@nsis/lumis-wasm": "workspace:^"
 	},
 	"devDependencies": {
 		"@lumis-sh/lumis": "catalog:",
-		"tree-sitter-nsis": "catalog:",
-		"unplugin-macros": "catalog:",
 		"vitest": "catalog:"
 	}
 }

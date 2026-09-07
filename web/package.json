@@ -24,6 +24,7 @@
 		"@nsis/dent-ui": "workspace:*",
 		"@nsis/highlightjs": "workspace:*",
 		"@nsis/lumis": "workspace:*",
+		"@nsis/lumis-wasm": "workspace:*",
 		"@nsis/prismjs": "workspace:*",
 		"@nsis/textmate": "workspace:*",
 		"@playwright/test": "catalog:",
