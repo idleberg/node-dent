@@ -1,0 +1,18 @@
+# Package Manager
+bower_components/
+node_modules/
+npm-debug.log*
+vendor/
+package-lock.json
+yarn-error.log
+yarn.lock
+bin/
+
+# Build
+dist/
+
+# Generated
+index.d.ts
+index.js
+lumis.json
+*.wasm

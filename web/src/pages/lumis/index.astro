@@ -24,10 +24,16 @@ import DemoLayout from '../../layouts/DemoLayout.astro';
 
 <script>
 	import example from '../../data/example.nsi?raw';
-	import { highlight } from '@lumis-sh/lumis';
+	import { configureLanguagePackageResolver, configureWasmResolver, highlight } from '@lumis-sh/lumis';
 	import { htmlInline } from '@lumis-sh/lumis/formatters';
 	import { nsis } from '@nsis/lumis';
+	import manifestUrl from '@nsis/lumis-wasm/lumis.json?url';
+	import parserUrl from '@nsis/lumis-wasm/tree-sitter-nsis.wasm?url';
 	import tokyonightMoon from '@lumis-sh/themes/tokyonight_moon';
+
+	// Serve the language package from our own bundle rather than the CDN
+	configureLanguagePackageResolver(() => manifestUrl);
+	configureWasmResolver(() => parserUrl);
 
 	document.getElementById('output')!.innerHTML = await highlight(
 		example,

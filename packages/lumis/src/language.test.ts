@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createLanguage } from './index.ts';
+import { createLanguage, packageName } from './index.ts';
 
 describe('createLanguage', () => {
 	it('should return a language with correct id', () => {
@@ -14,43 +14,26 @@ describe('createLanguage', () => {
 		expect(lang.aliases).toEqual(['nsi', 'nsh']);
 	});
 
-	it('should include bundled highlights by default', () => {
+	it('should point at the language package', () => {
 		const lang = createLanguage();
 
-		expect(lang.highlights).toBeTypeOf('string');
-		expect(lang.highlights.length).toBeGreaterThan(0);
+		expect(lang.packageName).toBe(packageName);
 	});
 
-	it('should contain Tree-sitter query patterns in highlights', () => {
+	// Lumis rejects a language that carries its own queries, they live in the package
+	it('should not carry query fields', () => {
 		const lang = createLanguage();
 
-		expect(lang.highlights).toContain('@keyword');
-		expect(lang.highlights).toContain('@comment');
-		expect(lang.highlights).toContain('@string');
-		expect(lang.highlights).toContain('@variable');
+		expect(lang).not.toHaveProperty('highlights');
+		expect(lang).not.toHaveProperty('injections');
+		expect(lang).not.toHaveProperty('locals');
+		expect(lang).not.toHaveProperty('brackets');
 	});
 
-	it('should not contain (?i) flags in highlights', () => {
+	it('should omit wasm by default', () => {
 		const lang = createLanguage();
 
-		expect(lang.highlights).not.toContain('(?i)');
-	});
-
-	it('should accept custom highlights', () => {
-		const custom = '(identifier) @variable';
-		const lang = createLanguage({ highlights: custom });
-
-		expect(lang.highlights).toBe(custom);
-	});
-
-	it('should default wasm to a WasmRef', () => {
-		const lang = createLanguage();
-
-		expect(lang.wasm).toEqual({
-			packageName: 'tree-sitter-nsis',
-			name: 'tree-sitter-nsis',
-			version: expect.stringMatching(/^\d+\.\d+$/),
-		});
+		expect(lang).not.toHaveProperty('wasm');
 	});
 
 	it('should pass through a custom wasm option', () => {

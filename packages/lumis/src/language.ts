@@ -1,32 +1,20 @@
 import type { Language, WasmRef } from '@lumis-sh/lumis';
-import highlights from 'tree-sitter-nsis/queries/highlights.scm';
-import { getTreeSitterVersion } from './macros.ts' with { type: 'macro' };
 
 export type RuntimeWasmInput = Uint8Array | ArrayBuffer | string | URL;
 
 export type LanguageOptions = {
 	wasm?: WasmRef | RuntimeWasmInput;
-	highlights?: string;
 };
 
-const defaultWasmRef: WasmRef = {
-	packageName: 'tree-sitter-nsis',
-	name: 'tree-sitter-nsis',
-	version: getTreeSitterVersion(),
-};
+/** The Lumis language package holding the parser and its matching queries. */
+export const packageName = '@nsis/lumis-wasm';
 
 export const nsis: Language = {
 	id: 'nsis',
 	aliases: ['nsi', 'nsh'],
-	highlights,
-	wasm: defaultWasmRef,
+	packageName,
 };
 
 export function createLanguage(options?: LanguageOptions): Language {
-	return {
-		id: 'nsis',
-		aliases: ['nsi', 'nsh'],
-		highlights: options?.highlights ?? highlights,
-		wasm: options?.wasm ?? defaultWasmRef,
-	};
+	return options?.wasm === undefined ? { ...nsis } : { ...nsis, wasm: options.wasm };
 }

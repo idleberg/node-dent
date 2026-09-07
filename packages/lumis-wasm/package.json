@@ -1,0 +1,50 @@
+{
+	"name": "@nsis/lumis-wasm",
+	"version": "0.0.0",
+	"description": "Self-contained Lumis language package for NSIS",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/idleberg/nsis-org.git"
+	},
+	"homepage": "https://github.com/idleberg/nsis-org/tree/main/packages/lumis-wasm#readme",
+	"keywords": [
+		"lumis",
+		"nsis",
+		"syntax-highlighting",
+		"tree-sitter",
+		"wasm"
+	],
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./index.js"
+		},
+		"./lumis.json": "./lumis.json",
+		"./tree-sitter-nsis.wasm": "./tree-sitter-nsis.wasm"
+	},
+	"engines": {
+		"node": "^20.19.0 || >=22.12.0"
+	},
+	"files": [
+		"index.d.ts",
+		"index.js",
+		"lumis.json",
+		"tree-sitter-nsis.wasm",
+		"LICENSE",
+		"README.md"
+	],
+	"scripts": {
+		"build": "node scripts/build.js",
+		"lint:biome": "biome check",
+		"prepublishOnly": "npm run build",
+		"publish:npm": "np"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"tree-sitter-nsis": "catalog:"
+	}
+}
