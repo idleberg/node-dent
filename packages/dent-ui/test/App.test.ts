@@ -65,7 +65,8 @@ describe('App', () => {
 
 		await page.getByRole('combobox', { name: 'Comments' }).selectOptions('hash');
 
-		await expect.element(page.getByLabelText('Formatted output editor')).toHaveTextContent('# hello');
+		// toHaveTextContent matches the whole normalized text, so assert on the substring ourselves
+		await expect.poll(() => page.getByLabelText('Formatted output editor').element().textContent).toContain('# hello');
 	});
 
 	it('renders both editor panes', async () => {
