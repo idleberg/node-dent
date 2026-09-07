@@ -1,5 +1,16 @@
 # @nsis/lumis
 
+## 0.3.0
+
+### Minor Changes
+
+- c6b463e: add support for lumis 0.7
+
+### Patch Changes
+
+- Updated dependencies [c6b463e]
+  - @nsis/lumis-wasm@0.1.0
+
 ## 0.2.1
 
 ### Patch Changes
