@@ -1,6 +1,6 @@
 {
 	"name": "@nsis/lumis",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "NSIS language support for Lumis syntax highlighter",
 	"license": "MIT",
 	"repository": {
