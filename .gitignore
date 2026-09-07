@@ -16,6 +16,7 @@ bin/
 dist/
 
 # Test
+.vitest/
 test-results/
 playwright-report/
 

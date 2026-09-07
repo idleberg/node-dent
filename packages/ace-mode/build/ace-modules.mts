@@ -45,12 +45,23 @@ export function aceModules(): TsdownPlugin {
 }
 
 function wrapModule(moduleId: string, source: string, prefix: string): string {
-	const body = extractModuleBody(source);
-	const dependencies = extractDependencies(source)
+	const normalized = restoreRequire(source);
+	const body = extractModuleBody(normalized);
+	const dependencies = extractDependencies(normalized)
 		.map((dependency) => `"${dependency}"`)
 		.join(',');
 
 	return `${prefix}define("${moduleId}",[${dependencies}], function(require, exports, module) {\n${body}\n});`;
+}
+
+/**
+ * The CJS wrapper rolldown emits binds its own `require`, so it renames ours to
+ * `require$1`. We strip that wrapper and re-bind `require` as the AMD callback's
+ * parameter, which leaves the rename dangling — and hides the dependencies from
+ * {@link extractDependencies}.
+ */
+function restoreRequire(source: string): string {
+	return source.replaceAll(/\brequire\$\d+\b/g, 'require');
 }
 
 function extractModuleBody(source: string): string {
